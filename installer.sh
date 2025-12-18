@@ -193,6 +193,8 @@ echo -e "${GREEN}[+] Detected architecture: $ARCH ($BINARY_SUFFIX)${NC}"
 if systemctl is-active --quiet dockeraz; then
     echo -e "${YELLOW}[+] Stopping existing DockerAZ service...${NC}"
     systemctl stop dockeraz
+    echo -e "${GREEN}[+] Sleeping for 3 seconds to ensure shutdown...${NC}"
+    sleep 3
 fi
 
 # 7. Download Binary
