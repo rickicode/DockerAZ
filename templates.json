@@ -1,0 +1,125 @@
+[
+  {
+    "id": "mysql",
+    "name": "MySQL",
+    "description": "The worlds most popular open source database",
+    "image": "mysql",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [3306],
+    "env": {
+      "MYSQL_ROOT_PASSWORD": "{{ROOT_PASSWORD}}",
+      "MYSQL_DATABASE": "{{DB_NAME}}",
+      "MYSQL_USER": "{{DB_USER}}",
+      "MYSQL_PASSWORD": "{{DB_PASSWORD}}"
+    },
+    "versions": ["latest", "8.0", "5.7"]
+  },
+  {
+    "id": "mariadb",
+    "name": "MariaDB",
+    "description": "An enhanced, drop-in replacement for MySQL",
+    "image": "mariadb",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [3306],
+    "env": {
+      "MARIADB_ROOT_PASSWORD": "{{ROOT_PASSWORD}}",
+      "MARIADB_DATABASE": "{{DB_NAME}}",
+      "MARIADB_USER": "{{DB_USER}}",
+      "MARIADB_PASSWORD": "{{DB_PASSWORD}}"
+    },
+    "versions": ["latest", "11.1", "10.11", "10.6"]
+  },
+  {
+    "id": "postgres",
+    "name": "PostgreSQL",
+    "description": "The worlds most advanced open source relational database",
+    "image": "postgres",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [5432],
+    "env": {
+      "POSTGRES_PASSWORD": "{{DB_PASSWORD}}",
+      "POSTGRES_USER": "{{DB_USER}}",
+      "POSTGRES_DB": "{{DB_NAME}}"
+    },
+    "versions": ["latest", "16", "15", "14", "13"]
+  },
+  {
+    "id": "redis",
+    "name": "Redis",
+    "description": "In-memory data structure store, used as a database, cache and message broker",
+    "image": "redis",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [6379],
+    "env": {
+      "REDIS_PASSWORD": "{{DB_PASSWORD}}"
+    },
+    "versions": ["latest", "7.2", "6.2"]
+  },
+  {
+    "id": "keydb",
+    "name": "KeyDB",
+    "description": "A high performance fork of Redis",
+    "image": "eqalpha/keydb",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [6379],
+    "env": {
+      "KEYDB_PASSWORD": "{{DB_PASSWORD}}"
+    },
+    "versions": ["latest"]
+  },
+  {
+    "id": "memcached",
+    "name": "Memcached",
+    "description": "High-performance, distributed memory object caching system",
+    "image": "memcached",
+    "service_type": "database",
+    "category": "Database Engines",
+    "ports": [11211],
+    "env": {},
+    "versions": ["latest", "1.6"]
+  },
+  {
+    "id": "phpmyadmin",
+    "name": "phpMyAdmin",
+    "description": "A free software tool written in PHP, intended to handle the administration of MySQL",
+    "image": "phpmyadmin/phpmyadmin",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [80],
+    "env": {
+      "PMA_ARBITRARY": "1"
+    },
+    "versions": ["latest", "5.2"]
+  },
+  {
+    "id": "adminer",
+    "name": "Adminer",
+    "description": "Database management in a single PHP file",
+    "image": "adminer",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [8080],
+    "env": {
+        "ADMINER_DEFAULT_SERVER": "mysql"
+    },
+    "versions": ["latest", "4.8"]
+  },
+  {
+    "id": "filebrowser",
+    "name": "File Browser",
+    "description": "Web File Browser to manage your files",
+    "image": "filebrowser/filebrowser",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [80],
+    "env": {
+        "FB_NOAUTH": "true"
+    },
+    "versions": ["latest"]
+  }
+]
