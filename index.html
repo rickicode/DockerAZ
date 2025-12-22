@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimicry Theme Development Guide</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF6B9D'/%3E%3Cstop offset='50%25' style='stop-color:%23FF1493'/%3E%3Cstop offset='100%25' style='stop-color:%23C71585'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='5' y='5' width='90' height='90' rx='18' fill='url(%23grad)'/%3E%3Cpath d='M26 72 L26 32 L38 50 L50 32 L62 50 L74 32 L74 72' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='20' r='6' fill='%23FFD700'/%3E%3Ccircle cx='70' cy='16' r='3' fill='%23FFD700' opacity='0.7'/%3E%3Ccircle cx='86' cy='30' r='2.5' fill='%23FFD700' opacity='0.5'/%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff7161;
+            --bg-dark: #0f1419;
+            --bg-surface: #1a2027;
+            --bg-surface-lighter: #242d38;
+            --text-primary: #f5f5f5;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --info: #58a6ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), #ff9a8b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .badge-required { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+        .badge-optional { background: rgba(88, 166, 255, 0.2); color: var(--info); }
+        .badge-tip { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        pre {
+            background: var(--bg-surface-lighter);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 1rem 0;
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            background: var(--bg-surface-lighter);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            color: var(--primary);
+        }
+        
+        .file-tree {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .file-tree .folder { color: var(--info); }
+        .file-tree .file { color: var(--text-primary); }
+        .file-tree .required { color: var(--primary); font-weight: 600; }
+        .file-tree .optional { color: var(--text-secondary); }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: var(--bg-surface);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        td { color: var(--text-secondary); }
+        td code { font-size: 0.8rem; }
+        
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background: rgba(88, 166, 255, 0.1);
+            border-color: var(--info);
+        }
+        
+        .alert-warning {
+            background: rgba(210, 153, 34, 0.1);
+            border-color: var(--warning);
+        }
+        
+        .alert-tip {
+            background: rgba(63, 185, 80, 0.1);
+            border-color: var(--success);
+        }
+        
+        .alert strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        li { margin-bottom: 0.5rem; }
+        li strong { color: var(--text-primary); }
+        
+        .toc {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: var(--info);
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mimicry Theme Development</h1>
+            <p>Complete guide to creating custom themes for Mimicry CMS</p>
+        </header>
+        
+        <nav class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ul>
+                <li><a href="#requirements">1. Requirements</a></li>
+                <li><a href="#structure">2. Theme Structure</a></li>
+                <li><a href="#required-files">3. Required Files</a></li>
+                <li><a href="#templates">4. Template Files</a></li>
+                <li><a href="#widgets">5. Widget System</a></li>
+                <li><a href="#variables">6. Available Variables</a></li>
+                <li><a href="#best-practices">7. Best Practices</a></li>
+            </ul>
+        </nav>
+
+        <section id="requirements">
+            <h2>1. Requirements</h2>
+            <p>Before creating a Mimicry theme, ensure you understand:</p>
+            <ul>
+                <li><strong>Jinja2 Templating</strong> - Mimicry uses Jinja2 for all templates</li>
+                <li><strong>HTML/CSS</strong> - Basic web development knowledge</li>
+                <li><strong>JSON</strong> - For configuration files</li>
+            </ul>
+            
+            <div class="alert alert-info">
+                <strong>💡 Recommended</strong>
+                Bootstrap 5 or Tailwind CSS for styling. All themes should be responsive.
+            </div>
+        </section>
+
+        <section id="structure">
+            <h2>2. Theme Structure</h2>
+            <p>A valid Mimicry theme must be placed in <code>/app/templates/themes/your-theme-name/</code></p>
+            
+            <div class="file-tree">
+                <span class="folder">📁 your-theme-name/</span><br>
+                ├── <span class="required">schema.json</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">widgets.json</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">widgets.defaults.json</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">layout.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">index.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">post.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">page.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">category.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">widgets.html</span> <span class="badge badge-required">Required</span><br>
+                ├── <span class="required">404.html</span> <span class="badge badge-required">Required</span><br>
+                └── <span class="optional">image.png</span> <span class="badge badge-optional">Optional</span> (Theme preview)
+            </div>
+            
+            <div class="alert alert-warning">
+                <strong>⚠️ Important</strong>
+                Themes without <code>schema.json</code>, <code>widgets.json</code>, and <code>widgets.defaults.json</code> will NOT be recognized by the system.
+            </div>
+        </section>
+
+        <section id="required-files">
+            <h2>3. Required Files</h2>
+            
+            <h3>3.1 schema.json</h3>
+            <p>Contains theme metadata (name, version, author, etc.)</p>
+            <pre>{
+    "name": "My Theme",
+    "version": "1.0.0",
+    "author": "Your Name",
+    "url": "https://yourwebsite.com"
+}</pre>
+
+            <h3>3.2 widgets.json</h3>
+            <p>Active widget configuration. Defines available widget zones and their widgets.</p>
+            <pre>{
+    "sidebar_right": [
+        {
+            "id": "recent_posts_1",
+            "type": "recent_posts",
+            "title": "Recent Posts",
+            "settings": {"count": 5},
+            "order": 0
+        }
+    ],
+    "footer_main": []
+}</pre>
+
+            <h3>3.3 widgets.defaults.json</h3>
+            <p>Default widget configuration. Used when resetting widgets to defaults.</p>
+            <p>Structure is identical to <code>widgets.json</code>.</p>
+
+            <h3>3.4 image.png</h3>
+            <p>Theme preview image displayed in admin panel. Recommended size: 640x360px (16:9 aspect ratio).</p>
+        </section>
+
+        <section id="templates">
+            <h2>4. Template Files</h2>
+            
+            <div class="card">
+                <div class="card-title">
+                    <h4>layout.html</h4>
+                    <span class="badge badge-required">Required</span>
+                </div>
+                <p>Base template that all other templates extend. Contains:</p>
+                <ul>
+                    <li>HTML head with meta tags & SEO</li>
+                    <li>Navigation menu</li>
+                    <li>Widget zones (header, footer)</li>
+                    <li>Footer with legal links</li>
+                </ul>
+                <pre>{% raw %}&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;title&gt;{% block title %}{{ config.site_name }}{% endblock %}&lt;/title&gt;
+    &lt;meta name="description" content="{% block meta_description %}{{ config.site_description }}{% endblock %}"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    {% from "themes/your-theme/widgets.html" import render_widget %}
+    
+    &lt;!-- Navigation --&gt;
+    &lt;nav&gt;
+        {% for item in menu_items %}
+            &lt;a href="{{ item.url }}"&gt;{{ item.title }}&lt;/a&gt;
+        {% endfor %}
+    &lt;/nav&gt;
+    
+    &lt;!-- Main Content --&gt;
+    {% block content %}{% endblock %}
+    
+    &lt;!-- Footer Widgets --&gt;
+    {% if widgets and widgets.footer_main %}
+        {% for widget in widgets.footer_main %}
+            {{ render_widget(widget) }}
+        {% endfor %}
+    {% endif %}
+    
+    &lt;!-- Footer --&gt;
+    &lt;footer&gt;
+        &lt;a href="/page/terms-of-service"&gt;Terms of Service&lt;/a&gt;
+        &lt;a href="/page/privacy-policy"&gt;Privacy Policy&lt;/a&gt;
+        &lt;p&gt;© {{ config.site_name }}&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;{% endraw %}</pre>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <h4>index.html</h4>
+                    <span class="badge badge-required">Required</span>
+                </div>
+                <p>Homepage template. Displays article listing.</p>
+                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
+
+{% block content %}
+    {% for article in articles %}
+        &lt;article&gt;
+            &lt;a href="/{{ article.published_date.strftime('%Y/%m/%d') }}/{{ article.slug }}"&gt;
+                &lt;img src="{{ article.featured_image }}" alt="{{ article.title }}"&gt;
+                &lt;h2&gt;{{ article.title }}&lt;/h2&gt;
+            &lt;/a&gt;
+            &lt;p&gt;{{ article.content|striptags|truncate(150) }}&lt;/p&gt;
+        &lt;/article&gt;
+    {% endfor %}
+    
+    &lt;!-- Pagination --&gt;
+    {% include "themes/your-theme/partials/pagination.html" %}
+{% endblock %}{% endraw %}</pre>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <h4>post.html</h4>
+                    <span class="badge badge-required">Required</span>
+                </div>
+                <p>Single article/post template.</p>
+                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
+
+{% block title %}{{ article.title }} - {{ config.site_name }}{% endblock %}
+{% block meta_description %}{{ article.content|striptags|truncate(160) }}{% endblock %}
+
+{% block content %}
+    &lt;article&gt;
+        &lt;h1&gt;{{ article.title }}&lt;/h1&gt;
+        &lt;time&gt;{{ article.published_date.strftime('%B %d, %Y') }}&lt;/time&gt;
+        
+        {% if article.featured_image %}
+            &lt;img src="{{ article.featured_image }}" alt="{{ article.title }}"&gt;
+        {% endif %}
+        
+        &lt;div class="content"&gt;
+            {{ article.content | safe }}
+        &lt;/div&gt;
+        
+        &lt;!-- Category --&gt;
+        {% if article.category %}
+            &lt;a href="/category/{{ article.category.slug }}"&gt;{{ article.category.name }}&lt;/a&gt;
+        {% endif %}
+    &lt;/article&gt;
+{% endblock %}{% endraw %}</pre>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <h4>page.html</h4>
+                    <span class="badge badge-required">Required</span>
+                </div>
+                <p>Static page template (for Terms of Service, Privacy Policy, etc.)</p>
+                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
+
+{% block title %}{{ page.title }} - {{ config.site_name }}{% endblock %}
+
+{% block content %}
+    &lt;h1&gt;{{ page.title }}&lt;/h1&gt;
+    &lt;div class="content"&gt;
+        {{ page.content | safe }}
+    &lt;/div&gt;
+{% endblock %}{% endraw %}</pre>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <h4>category.html</h4>
+                    <span class="badge badge-required">Required</span>
+                </div>
+                <p>Category archive page.</p>
+                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
+
+{% block title %}{{ category.name }} - {{ config.site_name }}{% endblock %}
+
+{% block content %}
+    &lt;h1&gt;{{ category.name }}&lt;/h1&gt;
+    
+    {% for article in articles %}
+        &lt;article&gt;
+            &lt;h2&gt;&lt;a href="/{{ article.published_date.strftime('%Y/%m/%d') }}/{{ article.slug }}"&gt;{{ article.title }}&lt;/a&gt;&lt;/h2&gt;
+        &lt;/article&gt;
+    {% endfor %}
+{% endblock %}{% endraw %}</pre>
+            </div>
+        </section>
+
+        <section id="widgets">
+            <h2>5. Widget System</h2>
+            
+            <h3>5.1 widgets.html</h3>
+            <p>Macro file for rendering widgets. Must implement <code>render_widget</code> macro.</p>
+            
+            <pre>{% raw %}{% macro render_widget(widget) %}
+&lt;div class="widget widget-{{ widget.type }}" id="widget-{{ widget.id }}"&gt;
+    
+    {% if widget.title %}
+        &lt;h5 class="widget-title"&gt;{{ widget.title }}&lt;/h5&gt;
+    {% endif %}
+
+    {# Text Widget #}
+    {% if widget.type == 'text' %}
+        &lt;div class="widget-content"&gt;{{ widget.content }}&lt;/div&gt;
+
+    {# HTML Widget #}
+    {% elif widget.type == 'html' %}
+        &lt;div class="widget-content"&gt;{{ widget.content | safe }}&lt;/div&gt;
+
+    {# Recent Posts Widget #}
+    {% elif widget.type == 'recent_posts' %}
+        {% set posts = widget.render_data.posts if widget.render_data else [] %}
+        {% for post in posts %}
+            &lt;a href="/{{ post.published_date.strftime('%Y/%m/%d') }}/{{ post.slug }}"&gt;
+                {{ post.title }}
+            &lt;/a&gt;
+        {% endfor %}
+
+    {# Popular Posts Widget #}
+    {% elif widget.type == 'popular_posts' %}
+        {% set posts = widget.render_data.posts if widget.render_data else [] %}
+        {% for post in posts %}
+            &lt;a href="/{{ post.published_date.strftime('%Y/%m/%d') }}/{{ post.slug }}"&gt;
+                {{ post.title }}
+            &lt;/a&gt;
+        {% endfor %}
+
+    {# Categories Widget #}
+    {% elif widget.type == 'categories' %}
+        {% set cats = widget.render_data.categories if widget.render_data else [] %}
+        {% for cat in cats %}
+            &lt;a href="/category/{{ cat.slug }}"&gt;{{ cat.name }}&lt;/a&gt;
+        {% endfor %}
+
+    {# Search Widget #}
+    {% elif widget.type == 'search' %}
+        &lt;form action="/" method="get"&gt;
+            &lt;input type="search" name="q" placeholder="Search..."&gt;
+            &lt;button type="submit"&gt;Search&lt;/button&gt;
+        &lt;/form&gt;
+
+    {# Tags Widget #}
+    {% elif widget.type == 'tags' %}
+        {% set tags = widget.render_data.tags if widget.render_data else [] %}
+        {% for tag in tags %}
+            &lt;a href="/tag/{{ tag.name }}"&gt;#{{ tag.name }}&lt;/a&gt;
+        {% endfor %}
+
+    {# Archives Widget #}
+    {% elif widget.type == 'archives' %}
+        {% set archives = widget.render_data.archives if widget.render_data else [] %}
+        {% for arch in archives %}
+            &lt;a href="{{ arch.url }}"&gt;{{ arch.name }} ({{ arch.count }})&lt;/a&gt;
+        {% endfor %}
+
+    {% endif %}
+&lt;/div&gt;
+{% endmacro %}{% endraw %}</pre>
+
+            <h3>5.2 Widget Types</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Data Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>text</code></td>
+                        <td>Plain text content</td>
+                        <td><code>widget.content</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>html</code></td>
+                        <td>HTML content (use <code>| safe</code>)</td>
+                        <td><code>widget.content</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>recent_posts</code></td>
+                        <td>List of recent articles</td>
+                        <td><code>widget.render_data.posts</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>popular_posts</code></td>
+                        <td>Most viewed articles</td>
+                        <td><code>widget.render_data.posts</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>categories</code></td>
+                        <td>Category list with counts</td>
+                        <td><code>widget.render_data.categories</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>search</code></td>
+                        <td>Search form</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><code>tags</code></td>
+                        <td>Tag cloud</td>
+                        <td><code>widget.render_data.tags</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>archives</code></td>
+                        <td>Monthly archives</td>
+                        <td><code>widget.render_data.archives</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>5.3 Widget Zones</h3>
+            <p>Widget zones are defined in <code>widgets.json</code>. Common zones include:</p>
+            <ul>
+                <li><strong>sidebar_right</strong> - Right sidebar</li>
+                <li><strong>sidebar_left</strong> - Left sidebar</li>
+                <li><strong>header_top</strong> - Above header</li>
+                <li><strong>content_bottom</strong> - Below main content (4-column layout)</li>
+                <li><strong>footer_main</strong> - Inside footer (4-column layout)</li>
+            </ul>
+        </section>
+
+        <section id="variables">
+            <h2>6. Available Variables</h2>
+            
+            <h3>6.1 Global Variables (all pages)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>config</code></td>
+                        <td>Object</td>
+                        <td>Site configuration</td>
+                    </tr>
+                    <tr>
+                        <td><code>config.site_name</code></td>
+                        <td>String</td>
+                        <td>Site name</td>
+                    </tr>
+                    <tr>
+                        <td><code>config.site_description</code></td>
+                        <td>String</td>
+                        <td>Site description</td>
+                    </tr>
+                    <tr>
+                        <td><code>config.tagline</code></td>
+                        <td>String</td>
+                        <td>Site tagline</td>
+                    </tr>
+                    <tr>
+                        <td><code>config.favicon_url</code></td>
+                        <td>String</td>
+                        <td>Favicon URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>menu_items</code></td>
+                        <td>List</td>
+                        <td>Navigation menu items</td>
+                    </tr>
+                    <tr>
+                        <td><code>categories</code></td>
+                        <td>List</td>
+                        <td>All categories</td>
+                    </tr>
+                    <tr>
+                        <td><code>widgets</code></td>
+                        <td>Dict</td>
+                        <td>Widgets grouped by zone</td>
+                    </tr>
+                    <tr>
+                        <td><code>request</code></td>
+                        <td>Object</td>
+                        <td>Current request object</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>6.2 Article Object</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>article.id</code></td><td>Integer</td><td>Article ID</td></tr>
+                    <tr><td><code>article.title</code></td><td>String</td><td>Article title</td></tr>
+                    <tr><td><code>article.slug</code></td><td>String</td><td>URL slug</td></tr>
+                    <tr><td><code>article.content</code></td><td>String</td><td>HTML content</td></tr>
+                    <tr><td><code>article.featured_image</code></td><td>String</td><td>Featured image URL</td></tr>
+                    <tr><td><code>article.published_date</code></td><td>Datetime</td><td>Publish date</td></tr>
+                    <tr><td><code>article.category</code></td><td>Object</td><td>Category object</td></tr>
+                    <tr><td><code>article.views</code></td><td>Integer</td><td>View count</td></tr>
+                </tbody>
+            </table>
+
+            <h3>6.3 Category Object</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>category.id</code></td><td>Integer</td><td>Category ID</td></tr>
+                    <tr><td><code>category.name</code></td><td>String</td><td>Category name</td></tr>
+                    <tr><td><code>category.slug</code></td><td>String</td><td>URL slug</td></tr>
+                    <tr><td><code>category.article_count</code></td><td>Integer</td><td>Number of articles</td></tr>
+                </tbody>
+            </table>
+
+            <h3>6.4 Page Object</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>page.id</code></td><td>Integer</td><td>Page ID</td></tr>
+                    <tr><td><code>page.title</code></td><td>String</td><td>Page title</td></tr>
+                    <tr><td><code>page.slug</code></td><td>String</td><td>URL slug</td></tr>
+                    <tr><td><code>page.content</code></td><td>String</td><td>HTML content</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="best-practices">
+            <h2>7. Best Practices</h2>
+            
+            <div class="alert alert-tip">
+                <strong>✅ Do</strong>
+                <ul>
+                    <li>Use responsive design (mobile-first)</li>
+                    <li>Include dark mode support if possible</li>
+                    <li>Escape user content with <code>| e</code> filter</li>
+                    <li>Use <code>| safe</code> only for trusted HTML content</li>
+                    <li>Include legal page links in footer (<code>/page/terms-of-service</code>, <code>/page/privacy-policy</code>)</li>
+                    <li>Implement all widget types in <code>widgets.html</code></li>
+                    <li>Use semantic HTML5 elements</li>
+                    <li>Include Open Graph and Twitter Card meta tags</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-warning">
+                <strong>❌ Don't</strong>
+                <ul>
+                    <li>Hardcode absolute URLs</li>
+                    <li>Use inline styles excessively</li>
+                    <li>Forget to handle empty states (no articles, no widgets)</li>
+                    <li>Skip responsive testing</li>
+                    <li>Ignore accessibility (a11y)</li>
+                </ul>
+            </div>
+
+            <h3>SEO Checklist</h3>
+            <ul>
+                <li>✅ Unique <code>&lt;title&gt;</code> per page</li>
+                <li>✅ Meta description per page</li>
+                <li>✅ Canonical URL: <code>&lt;link rel="canonical" href="..."&gt;</code></li>
+                <li>✅ Open Graph tags (<code>og:title</code>, <code>og:image</code>, etc.)</li>
+                <li>✅ Twitter Card tags</li>
+                <li>✅ Structured data (JSON-LD)</li>
+                <li>✅ Proper heading hierarchy (single <code>&lt;h1&gt;</code> per page)</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Mimicry Theme Development Guide • Version 1.0</p>
+            <p>Generated for Mimicry CMS</p>
+        </footer>
+    </div>
+</body>
+</html>
