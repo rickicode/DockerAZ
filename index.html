@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mimicry Theme Development Guide</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF6B9D'/%3E%3Cstop offset='50%25' style='stop-color:%23FF1493'/%3E%3Cstop offset='100%25' style='stop-color:%23C71585'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='5' y='5' width='90' height='90' rx='18' fill='url(%23grad)'/%3E%3Cpath d='M26 72 L26 32 L38 50 L50 32 L62 50 L74 32 L74 72' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='80' cy='20' r='6' fill='%23FFD700'/%3E%3Ccircle cx='70' cy='16' r='3' fill='%23FFD700' opacity='0.7'/%3E%3Ccircle cx='86' cy='30' r='2.5' fill='%23FFD700' opacity='0.5'/%3E%3C/svg%3E">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>DockerAZ - Simple Docker Management Platform</title>
+    <meta name="description" content="DockerAZ adalah platform manajemen Docker yang simpel dan powerful. Deploy aplikasi dengan mudah menggunakan Git, Docker Compose, atau template siap pakai.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #ff7161;
-            --bg-dark: #0f1419;
-            --bg-surface: #1a2027;
-            --bg-surface-lighter: #242d38;
-            --text-primary: #f5f5f5;
-            --text-secondary: #8b949e;
-            --border: #30363d;
-            --success: #3fb950;
-            --warning: #d29922;
-            --info: #58a6ff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --gray: #64748b;
+            --gray-light: #94a3b8;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --gradient-3: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
         
         * {
@@ -28,768 +41,1292 @@
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
+            background: var(--dark);
+            color: var(--white);
             line-height: 1.6;
+            overflow-x: hidden;
         }
         
+        /* Animated Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+            animation: backgroundPulse 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        
+        /* Container */
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 24px;
         }
         
-        header {
-            text-align: center;
-            padding: 3rem 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 3rem;
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
         }
         
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), #ff9a8b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .badge-required { background: rgba(248, 81, 73, 0.2); color: #f85149; }
-        .badge-optional { background: rgba(88, 166, 255, 0.2); color: var(--info); }
-        .badge-tip { background: rgba(63, 185, 80, 0.2); color: var(--success); }
-        
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 2.5rem 0 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary);
-            display: inline-block;
-        }
-        
-        h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 1.5rem 0 0.75rem;
-            color: var(--text-primary);
-        }
-        
-        p {
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-        
-        .card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        .card-title {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--white);
         }
         
-        .card-title h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
         
-        pre {
-            background: var(--bg-surface-lighter);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 1rem 1.25rem;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            margin: 1rem 0;
-        }
-        
-        code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            background: var(--bg-surface-lighter);
-            padding: 0.15rem 0.4rem;
-            border-radius: 0.25rem;
-            color: var(--primary);
-        }
-        
-        .file-tree {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-        }
-        
-        .file-tree .folder { color: var(--info); }
-        .file-tree .file { color: var(--text-primary); }
-        .file-tree .required { color: var(--primary); font-weight: 600; }
-        .file-tree .optional { color: var(--text-secondary); }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-        
-        th, td {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        th {
-            background: var(--bg-surface);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        td { color: var(--text-secondary); }
-        td code { font-size: 0.8rem; }
-        
-        .alert {
-            padding: 1rem 1.25rem;
-            border-radius: 0.5rem;
-            margin: 1rem 0;
-            border-left: 4px solid;
-        }
-        
-        .alert-info {
-            background: rgba(88, 166, 255, 0.1);
-            border-color: var(--info);
-        }
-        
-        .alert-warning {
-            background: rgba(210, 153, 34, 0.1);
-            border-color: var(--warning);
-        }
-        
-        .alert-tip {
-            background: rgba(63, 185, 80, 0.1);
-            border-color: var(--success);
-        }
-        
-        .alert strong {
-            color: var(--text-primary);
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-        
-        ul, ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
-            color: var(--text-secondary);
-        }
-        
-        li { margin-bottom: 0.5rem; }
-        li strong { color: var(--text-primary); }
-        
-        .toc {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        .toc h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-        
-        .toc ul {
+        .nav-links {
+            display: flex;
+            gap: 32px;
             list-style: none;
-            padding-left: 0;
+        }
+        
+        .nav-links a {
+            color: var(--gray-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--white);
+        }
+        
+        .nav-cta {
+            background: var(--gradient-2);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--accent);
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        .hero-badge span {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        
+        .hero h1 .gradient-text {
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-light);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-2);
+            color: var(--white);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.5);
+        }
+        
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--white);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        /* Install Section */
+        .install-section {
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .install-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 48px;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .install-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-2);
+        }
+        
+        .install-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        
+        .install-card p {
+            color: var(--gray-light);
+            margin-bottom: 32px;
+        }
+        
+        .code-block {
+            background: var(--dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            text-align: left;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .code-block .comment {
+            color: var(--gray);
+        }
+        
+        .code-block .command {
+            color: var(--accent);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn.copied {
+            background: #10b981;
+        }
+        
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .install-step {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+        }
+        
+        .install-step .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+        
+        .install-step h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .install-step p {
+            font-size: 0.875rem;
+            color: var(--gray-light);
             margin: 0;
         }
         
-        .toc li {
-            margin-bottom: 0.5rem;
+        /* Features Section */
+        .features-section {
+            padding: 100px 0;
         }
         
-        .toc a {
-            color: var(--info);
-            text-decoration: none;
-        }
-        
-        .toc a:hover {
-            text-decoration: underline;
-        }
-        
-        footer {
+        .section-header {
             text-align: center;
-            padding: 2rem 0;
-            margin-top: 3rem;
-            border-top: 1px solid var(--border);
-            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 64px;
+        }
+        
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        
+        .section-header p {
+            color: var(--gray-light);
+            font-size: 1.125rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: transparent;
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 0.05;
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon .material-icons-outlined {
+            font-size: 28px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            color: var(--gray-light);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .feature-tag {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Templates Section */
+        .templates-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(37, 99, 235, 0.03) 50%, transparent 100%);
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .template-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+        }
+        
+        .template-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.5rem;
+        }
+        
+        .template-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .template-card span {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        /* Requirements Section */
+        .requirements-section {
+            padding: 100px 0;
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .requirement-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+        
+        .requirement-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+        }
+        
+        .requirement-card .material-icons-outlined {
+            color: var(--accent);
+        }
+        
+        .requirement-card ul {
+            list-style: none;
+        }
+        
+        .requirement-card li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: var(--gray-light);
+            font-size: 0.95rem;
+        }
+        
+        .requirement-card li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+        }
+        
+        .cta-card {
+            background: var(--gradient-2);
+            border-radius: 32px;
+            padding: 64px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+        
+        .cta-card h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .cta-card p {
+            opacity: 0.9;
+            margin-bottom: 32px;
+            font-size: 1.125rem;
+            position: relative;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        .cta-btn-white {
+            background: var(--white);
+            color: var(--primary);
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-btn-outline {
+            background: transparent;
+            color: var(--white);
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .footer-links a {
+            color: var(--gray-light);
+            text-decoration: none;
             font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        .footer-copyright {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav .container {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: 100px 0 60px;
+            }
+            
+            .install-card {
+                padding: 32px 20px;
+            }
+            
+            .code-block {
+                font-size: 0.8rem;
+                padding: 16px;
+            }
+            
+            .copy-btn {
+                position: static;
+                margin-top: 16px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .cta-card {
+                padding: 40px 24px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Scroll animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Mimicry Theme Development</h1>
-            <p>Complete guide to creating custom themes for Mimicry CMS</p>
-        </header>
-        
-        <nav class="toc">
-            <h3>📚 Table of Contents</h3>
-            <ul>
-                <li><a href="#requirements">1. Requirements</a></li>
-                <li><a href="#structure">2. Theme Structure</a></li>
-                <li><a href="#required-files">3. Required Files</a></li>
-                <li><a href="#templates">4. Template Files</a></li>
-                <li><a href="#widgets">5. Widget System</a></li>
-                <li><a href="#variables">6. Available Variables</a></li>
-                <li><a href="#best-practices">7. Best Practices</a></li>
+    <div class="background-animation"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">
+                <div class="logo-icon">🐳</div>
+                DockerAZ
+            </a>
+            <ul class="nav-links">
+                <li><a href="#install">Instalasi</a></li>
+                <li><a href="#features">Fitur</a></li>
+                <li><a href="#templates">Templates</a></li>
+                <li><a href="#requirements">Kebutuhan</a></li>
             </ul>
-        </nav>
-
-        <section id="requirements">
-            <h2>1. Requirements</h2>
-            <p>Before creating a Mimicry theme, ensure you understand:</p>
-            <ul>
-                <li><strong>Jinja2 Templating</strong> - Mimicry uses Jinja2 for all templates</li>
-                <li><strong>HTML/CSS</strong> - Basic web development knowledge</li>
-                <li><strong>JSON</strong> - For configuration files</li>
-            </ul>
-            
-            <div class="alert alert-info">
-                <strong>💡 Recommended</strong>
-                Bootstrap 5 or Tailwind CSS for styling. All themes should be responsive.
+            <a href="https://github.com/rickicode/DockerAZ" class="nav-cta" target="_blank">
+                <span class="material-icons-outlined" style="font-size: 18px; vertical-align: middle;">code</span>
+                GitHub
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>v1.1.0</span>
+                    Open Source Docker Manager
+                </div>
+                <h1>
+                    Kelola Docker dengan
+                    <span class="gradient-text">Mudah & Cepat</span>
+                </h1>
+                <p>
+                    Platform manajemen Docker yang powerful dengan antarmuka modern. 
+                    Deploy aplikasi dari Git, Docker Compose, atau template siap pakai dalam hitungan detik.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#install" class="btn btn-primary">
+                        <span class="material-icons-outlined">rocket_launch</span>
+                        Mulai Sekarang
+                    </a>
+                    <a href="https://github.com/rickicode/DockerAZ" class="btn btn-secondary" target="_blank">
+                        <span class="material-icons-outlined">code</span>
+                        Lihat di GitHub
+                    </a>
+                </div>
             </div>
-        </section>
-
-        <section id="structure">
-            <h2>2. Theme Structure</h2>
-            <p>A valid Mimicry theme must be placed in <code>/app/templates/themes/your-theme-name/</code></p>
-            
-            <div class="file-tree">
-                <span class="folder">📁 your-theme-name/</span><br>
-                ├── <span class="required">schema.json</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">widgets.json</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">widgets.defaults.json</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">layout.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">index.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">post.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">page.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">category.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">widgets.html</span> <span class="badge badge-required">Required</span><br>
-                ├── <span class="required">404.html</span> <span class="badge badge-required">Required</span><br>
-                └── <span class="optional">image.png</span> <span class="badge badge-optional">Optional</span> (Theme preview)
+        </div>
+    </section>
+    
+    <!-- Install Section -->
+    <section class="install-section" id="install">
+        <div class="container">
+            <div class="install-card reveal">
+                <h2>⚡ Instalasi Satu Baris</h2>
+                <p>Instal DockerAZ hanya dengan satu perintah. Script installer akan mengatur semuanya untuk Anda.</p>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCommand()">
+                        <span class="material-icons-outlined" style="font-size: 16px;">content_copy</span>
+                        Salin
+                    </button>
+                    <pre><span class="comment"># Jalankan perintah ini di terminal sebagai root</span>
+<span class="command">curl -fsSL https://raw.githubusercontent.com/rickicode/DockerAZ/main/installer.sh | sudo bash</span></pre>
+                </div>
+                
+                <div class="install-steps">
+                    <div class="install-step">
+                        <div class="step-number">1</div>
+                        <h4>Download Script</h4>
+                        <p>Script installer akan diunduh dari repository GitHub resmi</p>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">2</div>
+                        <h4>Install Dependencies</h4>
+                        <p>Docker dan dependencies lainnya akan diinstall secara otomatis</p>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">3</div>
+                        <h4>Setup DockerAZ</h4>
+                        <p>Aplikasi dikonfigurasi dan dijalankan sebagai service systemd</p>
+                    </div>
+                    <div class="install-step">
+                        <div class="step-number">4</div>
+                        <h4>Akses Dashboard</h4>
+                        <p>Buka browser dan akses http://server-ip:3012 untuk memulai</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>🚀 Fitur Lengkap</h2>
+                <p>Semua yang Anda butuhkan untuk mengelola container Docker dengan mudah dan efisien</p>
             </div>
             
-            <div class="alert alert-warning">
-                <strong>⚠️ Important</strong>
-                Themes without <code>schema.json</code>, <code>widgets.json</code>, and <code>widgets.defaults.json</code> will NOT be recognized by the system.
+            <div class="features-grid">
+                <!-- Feature 1: Git Deployment -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">source</span>
+                    </div>
+                    <h3>Git-based Deployment</h3>
+                    <p>Deploy aplikasi langsung dari repository Git. Cukup masukkan URL repo, DockerAZ akan clone, build image, dan menjalankan container secara otomatis.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Auto Build</span>
+                        <span class="feature-tag">Dockerfile</span>
+                        <span class="feature-tag">Private Repo</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 2: Docker Compose -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">layers</span>
+                    </div>
+                    <h3>Docker Compose Support</h3>
+                    <p>Jalankan multi-container menggunakan Docker Compose. Kelola stack aplikasi kompleks dengan mudah menggunakan file compose.yml.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Multi-container</span>
+                        <span class="feature-tag">Networks</span>
+                        <span class="feature-tag">Volumes</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 3: Template Library -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">widgets</span>
+                    </div>
+                    <h3>Template Library</h3>
+                    <p>Koleksi template siap pakai untuk database, monitoring, automation, dan lainnya. Deploy MySQL, Redis, Grafana, dan banyak lagi dengan satu klik.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">20+ Templates</span>
+                        <span class="feature-tag">One-Click</span>
+                        <span class="feature-tag">Configurable</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 4: Traefik Integration -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">language</span>
+                    </div>
+                    <h3>Traefik Reverse Proxy</h3>
+                    <p>Integrasi otomatis dengan Traefik untuk routing domain. Dapatkan SSL certificate gratis dari Let's Encrypt secara otomatis.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Auto SSL</span>
+                        <span class="feature-tag">Let's Encrypt</span>
+                        <span class="feature-tag">Custom Domain</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 5: Real-time Logs -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">terminal</span>
+                    </div>
+                    <h3>Real-time Log Streaming</h3>
+                    <p>Monitor log container secara real-time melalui WebSocket. Lihat output aplikasi, debug error, dan pantau aktivitas container langsung dari dashboard.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">WebSocket</span>
+                        <span class="feature-tag">Live View</span>
+                        <span class="feature-tag">Filtering</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 6: Auto Deploy -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">sync</span>
+                    </div>
+                    <h3>Auto Deployment</h3>
+                    <p>Aktifkan auto-deploy untuk update otomatis saat ada perubahan di repository Git. Cocok untuk workflow CI/CD tanpa konfigurasi tambahan.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Git Polling</span>
+                        <span class="feature-tag">Auto Build</span>
+                        <span class="feature-tag">Zero Downtime</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 7: Resource Monitoring -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">monitoring</span>
+                    </div>
+                    <h3>Resource Monitoring</h3>
+                    <p>Pantau penggunaan CPU, memory, dan network setiap container. Lihat statistik sistem dan container dalam satu dashboard terintegrasi.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">CPU Usage</span>
+                        <span class="feature-tag">Memory</span>
+                        <span class="feature-tag">Network I/O</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 8: Volume Management -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">folder</span>
+                    </div>
+                    <h3>Volume Management</h3>
+                    <p>Kelola persistent storage dengan mudah. Mount folder host ke container, browse file, dan atur permission volume dengan antarmuka visual.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Bind Mounts</span>
+                        <span class="feature-tag">File Browser</span>
+                        <span class="feature-tag">Persistent</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 9: Port Management -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">electrical_services</span>
+                    </div>
+                    <h3>Port Management</h3>
+                    <p>Atur port mapping dengan mudah. Expose port container ke host, deteksi konflik port secara otomatis, dan kelola network binding.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Port Mapping</span>
+                        <span class="feature-tag">Auto Detect</span>
+                        <span class="feature-tag">Conflict Check</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 10: Environment Variables -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">tune</span>
+                    </div>
+                    <h3>Environment Variables</h3>
+                    <p>Konfigurasi environment variable dengan editor visual. Support format JSON atau key=value, dengan validasi real-time.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Visual Editor</span>
+                        <span class="feature-tag">JSON Support</span>
+                        <span class="feature-tag">Secrets</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 11: Cloudflare Tunnel -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">cloud</span>
+                    </div>
+                    <h3>Cloudflare Tunnel</h3>
+                    <p>Integrasi dengan Cloudflare Tunnel untuk expose service tanpa membuka port. Dapatkan security dan performance dari Cloudflare network.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Zero Trust</span>
+                        <span class="feature-tag">No Port Forward</span>
+                        <span class="feature-tag">DDoS Protection</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 12: Authentication -->
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <span class="material-icons-outlined">lock</span>
+                    </div>
+                    <h3>Secure Authentication</h3>
+                    <p>Amankan dashboard dengan autentikasi berbasis cookie. Support reset password via command line untuk keamanan tambahan.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Session Auth</span>
+                        <span class="feature-tag">Rate Limiting</span>
+                        <span class="feature-tag">Password Reset</span>
+                    </div>
+                </div>
             </div>
-        </section>
-
-        <section id="required-files">
-            <h2>3. Required Files</h2>
+        </div>
+    </section>
+    
+    <!-- Templates Section -->
+    <section class="templates-section" id="templates">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>📦 Template Siap Pakai</h2>
+                <p>Deploy berbagai service populer dengan konfigurasi optimal dalam hitungan detik</p>
+            </div>
             
-            <h3>3.1 schema.json</h3>
-            <p>Contains theme metadata (name, version, author, etc.)</p>
-            <pre>{
-    "name": "My Theme",
-    "version": "1.0.0",
-    "author": "Your Name",
-    "url": "https://yourwebsite.com"
-}</pre>
-
-            <h3>3.2 widgets.json</h3>
-            <p>Active widget configuration. Defines available widget zones and their widgets.</p>
-            <pre>{
-    "sidebar_right": [
-        {
-            "id": "recent_posts_1",
-            "type": "recent_posts",
-            "title": "Recent Posts",
-            "settings": {"count": 5},
-            "order": 0
+            <div class="templates-grid reveal">
+                <div class="template-card">
+                    <div class="template-icon">🐬</div>
+                    <h4>MySQL</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🐘</div>
+                    <h4>PostgreSQL</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🍃</div>
+                    <h4>MongoDB</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔴</div>
+                    <h4>Redis</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🦭</div>
+                    <h4>MariaDB</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">⚡</div>
+                    <h4>KeyDB</h4>
+                    <span>Database Engines</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">📊</div>
+                    <h4>Grafana</h4>
+                    <span>Monitoring</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔥</div>
+                    <h4>Prometheus</h4>
+                    <span>Monitoring</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">💚</div>
+                    <h4>Uptime Kuma</h4>
+                    <span>Monitoring</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔗</div>
+                    <h4>n8n</h4>
+                    <span>Automation</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔶</div>
+                    <h4>Node-RED</h4>
+                    <span>Automation</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🦊</div>
+                    <h4>Gitea</h4>
+                    <span>DevOps</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔧</div>
+                    <h4>Jenkins</h4>
+                    <span>DevOps</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🔐</div>
+                    <h4>Vaultwarden</h4>
+                    <span>Security</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🐝</div>
+                    <h4>RabbitMQ</h4>
+                    <span>Messaging</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🦟</div>
+                    <h4>Mosquitto</h4>
+                    <span>Messaging</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">⚙️</div>
+                    <h4>phpMyAdmin</h4>
+                    <span>Management</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">📁</div>
+                    <h4>File Browser</h4>
+                    <span>Management</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">🗄️</div>
+                    <h4>Adminer</h4>
+                    <span>Management</span>
+                </div>
+                <div class="template-card">
+                    <div class="template-icon">💾</div>
+                    <h4>Memcached</h4>
+                    <span>Database Engines</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Requirements Section -->
+    <section class="requirements-section" id="requirements">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>📋 Kebutuhan Sistem</h2>
+                <p>Pastikan server Anda memenuhi kebutuhan berikut sebelum instalasi</p>
+            </div>
+            
+            <div class="requirements-grid">
+                <div class="requirement-card reveal">
+                    <h4>
+                        <span class="material-icons-outlined">computer</span>
+                        Sistem Operasi
+                    </h4>
+                    <ul>
+                        <li>Ubuntu 20.04 / 22.04 LTS</li>
+                        <li>Debian 11 atau lebih baru</li>
+                        <li>CentOS 8 / Rocky Linux 8</li>
+                        <li>Atau distro Linux modern lainnya</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card reveal">
+                    <h4>
+                        <span class="material-icons-outlined">memory</span>
+                        Hardware Minimum
+                    </h4>
+                    <ul>
+                        <li>CPU: 1 Core (2+ direkomendasikan)</li>
+                        <li>RAM: 1GB (2GB+ direkomendasikan)</li>
+                        <li>Disk: 10GB space kosong</li>
+                        <li>Network: Koneksi internet stabil</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card reveal">
+                    <h4>
+                        <span class="material-icons-outlined">settings</span>
+                        Software
+                    </h4>
+                    <ul>
+                        <li>Docker (diinstall otomatis)</li>
+                        <li>Docker Compose v2+</li>
+                        <li>curl atau wget</li>
+                        <li>sudo access / root</li>
+                    </ul>
+                </div>
+                
+                <div class="requirement-card reveal">
+                    <h4>
+                        <span class="material-icons-outlined">router</span>
+                        Network (Opsional)
+                    </h4>
+                    <ul>
+                        <li>Port 3012 untuk dashboard</li>
+                        <li>Port 80/443 untuk Traefik</li>
+                        <li>Domain untuk SSL otomatis</li>
+                        <li>Cloudflare account (tunnel)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card reveal">
+                <h2>Siap Mengelola Container Anda?</h2>
+                <p>Mulai sekarang dan rasakan kemudahan mengelola Docker dengan DockerAZ</p>
+                <div class="cta-buttons">
+                    <a href="#install" class="cta-btn-white">
+                        <span class="material-icons-outlined" style="vertical-align: middle; margin-right: 8px;">download</span>
+                        Install Sekarang
+                    </a>
+                    <a href="https://github.com/rickicode/DockerAZ" class="cta-btn-outline" target="_blank">
+                        <span class="material-icons-outlined" style="vertical-align: middle; margin-right: 8px;">star</span>
+                        Star di GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="#" class="logo">
+                    <div class="logo-icon">🐳</div>
+                    DockerAZ
+                </a>
+                <div class="footer-links">
+                    <a href="https://github.com/rickicode/DockerAZ" target="_blank">GitHub</a>
+                    <a href="https://github.com/rickicode/DockerAZ/issues" target="_blank">Issues</a>
+                    <a href="https://github.com/rickicode/DockerAZ/releases" target="_blank">Releases</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2024 DockerAZ. Open Source Project.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Copy command function
+        function copyCommand() {
+            const command = 'curl -fsSL https://raw.githubusercontent.com/rickicode/DockerAZ/main/installer.sh | sudo bash';
+            navigator.clipboard.writeText(command).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '<span class="material-icons-outlined" style="font-size: 16px;">check</span> Tersalin!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = '<span class="material-icons-outlined" style="font-size: 16px;">content_copy</span> Salin';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
         }
-    ],
-    "footer_main": []
-}</pre>
-
-            <h3>3.3 widgets.defaults.json</h3>
-            <p>Default widget configuration. Used when resetting widgets to defaults.</p>
-            <p>Structure is identical to <code>widgets.json</code>.</p>
-
-            <h3>3.4 image.png</h3>
-            <p>Theme preview image displayed in admin panel. Recommended size: 640x360px (16:9 aspect ratio).</p>
-        </section>
-
-        <section id="templates">
-            <h2>4. Template Files</h2>
-            
-            <div class="card">
-                <div class="card-title">
-                    <h4>layout.html</h4>
-                    <span class="badge badge-required">Required</span>
-                </div>
-                <p>Base template that all other templates extend. Contains:</p>
-                <ul>
-                    <li>HTML head with meta tags & SEO</li>
-                    <li>Navigation menu</li>
-                    <li>Widget zones (header, footer)</li>
-                    <li>Footer with legal links</li>
-                </ul>
-                <pre>{% raw %}&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;title&gt;{% block title %}{{ config.site_name }}{% endblock %}&lt;/title&gt;
-    &lt;meta name="description" content="{% block meta_description %}{{ config.site_description }}{% endblock %}"&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    {% from "themes/your-theme/widgets.html" import render_widget %}
-    
-    &lt;!-- Navigation --&gt;
-    &lt;nav&gt;
-        {% for item in menu_items %}
-            &lt;a href="{{ item.url }}"&gt;{{ item.title }}&lt;/a&gt;
-        {% endfor %}
-    &lt;/nav&gt;
-    
-    &lt;!-- Main Content --&gt;
-    {% block content %}{% endblock %}
-    
-    &lt;!-- Footer Widgets --&gt;
-    {% if widgets and widgets.footer_main %}
-        {% for widget in widgets.footer_main %}
-            {{ render_widget(widget) }}
-        {% endfor %}
-    {% endif %}
-    
-    &lt;!-- Footer --&gt;
-    &lt;footer&gt;
-        &lt;a href="/page/terms-of-service"&gt;Terms of Service&lt;/a&gt;
-        &lt;a href="/page/privacy-policy"&gt;Privacy Policy&lt;/a&gt;
-        &lt;p&gt;© {{ config.site_name }}&lt;/p&gt;
-    &lt;/footer&gt;
-&lt;/body&gt;
-&lt;/html&gt;{% endraw %}</pre>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <h4>index.html</h4>
-                    <span class="badge badge-required">Required</span>
-                </div>
-                <p>Homepage template. Displays article listing.</p>
-                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
-
-{% block content %}
-    {% for article in articles %}
-        &lt;article&gt;
-            &lt;a href="/{{ article.published_date.strftime('%Y/%m/%d') }}/{{ article.slug }}"&gt;
-                &lt;img src="{{ article.featured_image }}" alt="{{ article.title }}"&gt;
-                &lt;h2&gt;{{ article.title }}&lt;/h2&gt;
-            &lt;/a&gt;
-            &lt;p&gt;{{ article.content|striptags|truncate(150) }}&lt;/p&gt;
-        &lt;/article&gt;
-    {% endfor %}
-    
-    &lt;!-- Pagination --&gt;
-    {% include "themes/your-theme/partials/pagination.html" %}
-{% endblock %}{% endraw %}</pre>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <h4>post.html</h4>
-                    <span class="badge badge-required">Required</span>
-                </div>
-                <p>Single article/post template.</p>
-                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
-
-{% block title %}{{ article.title }} - {{ config.site_name }}{% endblock %}
-{% block meta_description %}{{ article.content|striptags|truncate(160) }}{% endblock %}
-
-{% block content %}
-    &lt;article&gt;
-        &lt;h1&gt;{{ article.title }}&lt;/h1&gt;
-        &lt;time&gt;{{ article.published_date.strftime('%B %d, %Y') }}&lt;/time&gt;
         
-        {% if article.featured_image %}
-            &lt;img src="{{ article.featured_image }}" alt="{{ article.title }}"&gt;
-        {% endif %}
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
         
-        &lt;div class="content"&gt;
-            {{ article.content | safe }}
-        &lt;/div&gt;
+        window.addEventListener('scroll', reveal);
+        reveal(); // Initial check
         
-        &lt;!-- Category --&gt;
-        {% if article.category %}
-            &lt;a href="/category/{{ article.category.slug }}"&gt;{{ article.category.name }}&lt;/a&gt;
-        {% endif %}
-    &lt;/article&gt;
-{% endblock %}{% endraw %}</pre>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <h4>page.html</h4>
-                    <span class="badge badge-required">Required</span>
-                </div>
-                <p>Static page template (for Terms of Service, Privacy Policy, etc.)</p>
-                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
-
-{% block title %}{{ page.title }} - {{ config.site_name }}{% endblock %}
-
-{% block content %}
-    &lt;h1&gt;{{ page.title }}&lt;/h1&gt;
-    &lt;div class="content"&gt;
-        {{ page.content | safe }}
-    &lt;/div&gt;
-{% endblock %}{% endraw %}</pre>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <h4>category.html</h4>
-                    <span class="badge badge-required">Required</span>
-                </div>
-                <p>Category archive page.</p>
-                <pre>{% raw %}{% extends "themes/your-theme/layout.html" %}
-
-{% block title %}{{ category.name }} - {{ config.site_name }}{% endblock %}
-
-{% block content %}
-    &lt;h1&gt;{{ category.name }}&lt;/h1&gt;
-    
-    {% for article in articles %}
-        &lt;article&gt;
-            &lt;h2&gt;&lt;a href="/{{ article.published_date.strftime('%Y/%m/%d') }}/{{ article.slug }}"&gt;{{ article.title }}&lt;/a&gt;&lt;/h2&gt;
-        &lt;/article&gt;
-    {% endfor %}
-{% endblock %}{% endraw %}</pre>
-            </div>
-        </section>
-
-        <section id="widgets">
-            <h2>5. Widget System</h2>
-            
-            <h3>5.1 widgets.html</h3>
-            <p>Macro file for rendering widgets. Must implement <code>render_widget</code> macro.</p>
-            
-            <pre>{% raw %}{% macro render_widget(widget) %}
-&lt;div class="widget widget-{{ widget.type }}" id="widget-{{ widget.id }}"&gt;
-    
-    {% if widget.title %}
-        &lt;h5 class="widget-title"&gt;{{ widget.title }}&lt;/h5&gt;
-    {% endif %}
-
-    {# Text Widget #}
-    {% if widget.type == 'text' %}
-        &lt;div class="widget-content"&gt;{{ widget.content }}&lt;/div&gt;
-
-    {# HTML Widget #}
-    {% elif widget.type == 'html' %}
-        &lt;div class="widget-content"&gt;{{ widget.content | safe }}&lt;/div&gt;
-
-    {# Recent Posts Widget #}
-    {% elif widget.type == 'recent_posts' %}
-        {% set posts = widget.render_data.posts if widget.render_data else [] %}
-        {% for post in posts %}
-            &lt;a href="/{{ post.published_date.strftime('%Y/%m/%d') }}/{{ post.slug }}"&gt;
-                {{ post.title }}
-            &lt;/a&gt;
-        {% endfor %}
-
-    {# Popular Posts Widget #}
-    {% elif widget.type == 'popular_posts' %}
-        {% set posts = widget.render_data.posts if widget.render_data else [] %}
-        {% for post in posts %}
-            &lt;a href="/{{ post.published_date.strftime('%Y/%m/%d') }}/{{ post.slug }}"&gt;
-                {{ post.title }}
-            &lt;/a&gt;
-        {% endfor %}
-
-    {# Categories Widget #}
-    {% elif widget.type == 'categories' %}
-        {% set cats = widget.render_data.categories if widget.render_data else [] %}
-        {% for cat in cats %}
-            &lt;a href="/category/{{ cat.slug }}"&gt;{{ cat.name }}&lt;/a&gt;
-        {% endfor %}
-
-    {# Search Widget #}
-    {% elif widget.type == 'search' %}
-        &lt;form action="/" method="get"&gt;
-            &lt;input type="search" name="q" placeholder="Search..."&gt;
-            &lt;button type="submit"&gt;Search&lt;/button&gt;
-        &lt;/form&gt;
-
-    {# Tags Widget #}
-    {% elif widget.type == 'tags' %}
-        {% set tags = widget.render_data.tags if widget.render_data else [] %}
-        {% for tag in tags %}
-            &lt;a href="/tag/{{ tag.name }}"&gt;#{{ tag.name }}&lt;/a&gt;
-        {% endfor %}
-
-    {# Archives Widget #}
-    {% elif widget.type == 'archives' %}
-        {% set archives = widget.render_data.archives if widget.render_data else [] %}
-        {% for arch in archives %}
-            &lt;a href="{{ arch.url }}"&gt;{{ arch.name }} ({{ arch.count }})&lt;/a&gt;
-        {% endfor %}
-
-    {% endif %}
-&lt;/div&gt;
-{% endmacro %}{% endraw %}</pre>
-
-            <h3>5.2 Widget Types</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Data Available</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>text</code></td>
-                        <td>Plain text content</td>
-                        <td><code>widget.content</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>html</code></td>
-                        <td>HTML content (use <code>| safe</code>)</td>
-                        <td><code>widget.content</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>recent_posts</code></td>
-                        <td>List of recent articles</td>
-                        <td><code>widget.render_data.posts</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>popular_posts</code></td>
-                        <td>Most viewed articles</td>
-                        <td><code>widget.render_data.posts</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>categories</code></td>
-                        <td>Category list with counts</td>
-                        <td><code>widget.render_data.categories</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>search</code></td>
-                        <td>Search form</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td><code>tags</code></td>
-                        <td>Tag cloud</td>
-                        <td><code>widget.render_data.tags</code></td>
-                    </tr>
-                    <tr>
-                        <td><code>archives</code></td>
-                        <td>Monthly archives</td>
-                        <td><code>widget.render_data.archives</code></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>5.3 Widget Zones</h3>
-            <p>Widget zones are defined in <code>widgets.json</code>. Common zones include:</p>
-            <ul>
-                <li><strong>sidebar_right</strong> - Right sidebar</li>
-                <li><strong>sidebar_left</strong> - Left sidebar</li>
-                <li><strong>header_top</strong> - Above header</li>
-                <li><strong>content_bottom</strong> - Below main content (4-column layout)</li>
-                <li><strong>footer_main</strong> - Inside footer (4-column layout)</li>
-            </ul>
-        </section>
-
-        <section id="variables">
-            <h2>6. Available Variables</h2>
-            
-            <h3>6.1 Global Variables (all pages)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Variable</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>config</code></td>
-                        <td>Object</td>
-                        <td>Site configuration</td>
-                    </tr>
-                    <tr>
-                        <td><code>config.site_name</code></td>
-                        <td>String</td>
-                        <td>Site name</td>
-                    </tr>
-                    <tr>
-                        <td><code>config.site_description</code></td>
-                        <td>String</td>
-                        <td>Site description</td>
-                    </tr>
-                    <tr>
-                        <td><code>config.tagline</code></td>
-                        <td>String</td>
-                        <td>Site tagline</td>
-                    </tr>
-                    <tr>
-                        <td><code>config.favicon_url</code></td>
-                        <td>String</td>
-                        <td>Favicon URL</td>
-                    </tr>
-                    <tr>
-                        <td><code>menu_items</code></td>
-                        <td>List</td>
-                        <td>Navigation menu items</td>
-                    </tr>
-                    <tr>
-                        <td><code>categories</code></td>
-                        <td>List</td>
-                        <td>All categories</td>
-                    </tr>
-                    <tr>
-                        <td><code>widgets</code></td>
-                        <td>Dict</td>
-                        <td>Widgets grouped by zone</td>
-                    </tr>
-                    <tr>
-                        <td><code>request</code></td>
-                        <td>Object</td>
-                        <td>Current request object</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>6.2 Article Object</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><code>article.id</code></td><td>Integer</td><td>Article ID</td></tr>
-                    <tr><td><code>article.title</code></td><td>String</td><td>Article title</td></tr>
-                    <tr><td><code>article.slug</code></td><td>String</td><td>URL slug</td></tr>
-                    <tr><td><code>article.content</code></td><td>String</td><td>HTML content</td></tr>
-                    <tr><td><code>article.featured_image</code></td><td>String</td><td>Featured image URL</td></tr>
-                    <tr><td><code>article.published_date</code></td><td>Datetime</td><td>Publish date</td></tr>
-                    <tr><td><code>article.category</code></td><td>Object</td><td>Category object</td></tr>
-                    <tr><td><code>article.views</code></td><td>Integer</td><td>View count</td></tr>
-                </tbody>
-            </table>
-
-            <h3>6.3 Category Object</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><code>category.id</code></td><td>Integer</td><td>Category ID</td></tr>
-                    <tr><td><code>category.name</code></td><td>String</td><td>Category name</td></tr>
-                    <tr><td><code>category.slug</code></td><td>String</td><td>URL slug</td></tr>
-                    <tr><td><code>category.article_count</code></td><td>Integer</td><td>Number of articles</td></tr>
-                </tbody>
-            </table>
-
-            <h3>6.4 Page Object</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><code>page.id</code></td><td>Integer</td><td>Page ID</td></tr>
-                    <tr><td><code>page.title</code></td><td>String</td><td>Page title</td></tr>
-                    <tr><td><code>page.slug</code></td><td>String</td><td>URL slug</td></tr>
-                    <tr><td><code>page.content</code></td><td>String</td><td>HTML content</td></tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="best-practices">
-            <h2>7. Best Practices</h2>
-            
-            <div class="alert alert-tip">
-                <strong>✅ Do</strong>
-                <ul>
-                    <li>Use responsive design (mobile-first)</li>
-                    <li>Include dark mode support if possible</li>
-                    <li>Escape user content with <code>| e</code> filter</li>
-                    <li>Use <code>| safe</code> only for trusted HTML content</li>
-                    <li>Include legal page links in footer (<code>/page/terms-of-service</code>, <code>/page/privacy-policy</code>)</li>
-                    <li>Implement all widget types in <code>widgets.html</code></li>
-                    <li>Use semantic HTML5 elements</li>
-                    <li>Include Open Graph and Twitter Card meta tags</li>
-                </ul>
-            </div>
-            
-            <div class="alert alert-warning">
-                <strong>❌ Don't</strong>
-                <ul>
-                    <li>Hardcode absolute URLs</li>
-                    <li>Use inline styles excessively</li>
-                    <li>Forget to handle empty states (no articles, no widgets)</li>
-                    <li>Skip responsive testing</li>
-                    <li>Ignore accessibility (a11y)</li>
-                </ul>
-            </div>
-
-            <h3>SEO Checklist</h3>
-            <ul>
-                <li>✅ Unique <code>&lt;title&gt;</code> per page</li>
-                <li>✅ Meta description per page</li>
-                <li>✅ Canonical URL: <code>&lt;link rel="canonical" href="..."&gt;</code></li>
-                <li>✅ Open Graph tags (<code>og:title</code>, <code>og:image</code>, etc.)</li>
-                <li>✅ Twitter Card tags</li>
-                <li>✅ Structured data (JSON-LD)</li>
-                <li>✅ Proper heading hierarchy (single <code>&lt;h1&gt;</code> per page)</li>
-            </ul>
-        </section>
-
-        <footer>
-            <p>Mimicry Theme Development Guide • Version 1.0</p>
-            <p>Generated for Mimicry CMS</p>
-        </footer>
-    </div>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '12px 0';
+                nav.style.background = 'rgba(15, 23, 42, 0.95)';
+            } else {
+                nav.style.padding = '20px 0';
+                nav.style.background = 'rgba(15, 23, 42, 0.8)';
+            }
+        });
+    </script>
 </body>
 </html>
