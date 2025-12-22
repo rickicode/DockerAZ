@@ -1,5 +1,91 @@
 [
   {
+    "id": "homarr",
+    "name": "Homarr",
+    "icon": "dashboard",
+    "logo": "https://cdn.simpleicons.org/homarr/F55555",
+    "description": "A simple and lightweight dashboard for your server",
+    "image": "ghcr.io/ajnart/homarr",
+    "service_type": "image",
+    "category": "Dashboard",
+    "ports": [7575],
+    "volumes": ["configs:/app/data/configs", "icons:/app/public/icons"],
+    "env": {},
+    "versions": ["rc", "latest"]
+  },
+  {
+    "id": "adguardhome",
+    "name": "AdGuard Home",
+    "icon": "adguard",
+    "logo": "https://cdn.simpleicons.org/adguard/68BC71",
+    "description": "Network-wide ads & trackers blocking DNS server",
+    "image": "adguard/adguardhome",
+    "service_type": "image",
+    "category": "Network",
+    "ports": [3000, 53, 80],
+    "volumes": ["work:/opt/adguardhome/work", "conf:/opt/adguardhome/conf"],
+    "env": {},
+    "versions": ["beta", "latest"]
+  },
+  {
+    "id": "nginx-proxy-manager",
+    "name": "Nginx Proxy Manager",
+    "icon": "nginx",
+    "logo": "https://cdn.simpleicons.org/nginxproxymanager/F15833",
+    "description": "Docker container for managing Nginx proxy hosts with a simple UI",
+    "image": "jc21/nginx-proxy-manager",
+    "service_type": "image",
+    "category": "Network",
+    "ports": [81, 80, 443],
+    "volumes": ["data:/data", "letsencrypt:/etc/letsencrypt"],
+    "env": { "DB_SQLITE_FILE": "/data/database.sqlite" },
+    "versions": ["2.11", "latest"]
+  },
+  {
+    "id": "tailscale",
+    "name": "Tailscale",
+    "icon": "vpn_lock",
+    "logo": "https://cdn.simpleicons.org/tailscale/121212",
+    "description": "Zero config VPN for secure networks",
+    "image": "tailscale/tailscale",
+    "service_type": "image",
+    "category": "Network",
+    "ports": [],
+    "volumes": ["var_lib:/var/lib", "/dev/net/tun:/dev/net/tun"],
+    "env": { "TS_AUTH_KEY": "tskey-auth-..." },
+    "versions": ["stable", "latest"]
+  },
+  {
+    "id": "nginx",
+    "name": "Nginx",
+    "icon": "web",
+    "logo": "https://cdn.simpleicons.org/nginx/009639",
+    "description": "High performance web server",
+    "image": "nginx",
+    "service_type": "image",
+    "category": "Web Servers",
+    "ports": [80],
+    "volumes": ["html:/usr/share/nginx/html", "conf:/etc/nginx/conf.d"],
+    "env": {
+        "TZ": "Asia/Jakarta"
+    },
+    "versions": ["1.26", "alpine", "latest"]
+  },
+  {
+    "id": "caddy",
+    "name": "Caddy",
+    "icon": "web",
+    "logo": "https://cdn.simpleicons.org/caddy/00ADD8",
+    "description": "Powerful, enterprise-ready, open source web server with automatic HTTPS",
+    "image": "caddy",
+    "service_type": "image",
+    "category": "Web Servers",
+    "ports": [80, 443],
+    "volumes": ["data:/data", "config:/config", "./Caddyfile:/etc/caddy/Caddyfile"],
+    "env": {},
+    "versions": ["2.8", "alpine", "latest"]
+  },
+  {
     "id": "mysql",
     "name": "MySQL",
     "icon": "database",
@@ -9,14 +95,14 @@
     "service_type": "database",
     "category": "Databases",
     "ports": [3306],
-    "volumes": ["mysql_data:/var/lib/mysql"],
+    "volumes": ["data:/var/lib/mysql"],
     "env": {
       "MYSQL_ROOT_PASSWORD": "root",
       "MYSQL_DATABASE": "app_db",
       "MYSQL_USER": "user",
       "MYSQL_PASSWORD": "password"
     },
-    "versions": ["latest", "8.4", "8.0", "5.7"]
+    "versions": ["8.4", "8.0", "latest"]
   },
   {
     "id": "postgres",
@@ -28,13 +114,13 @@
     "service_type": "database",
     "category": "Databases",
     "ports": [5432],
-    "volumes": ["postgres_data:/var/lib/postgresql/data"],
+    "volumes": ["data:/var/lib/postgresql/data"],
     "env": {
       "POSTGRES_USER": "user",
       "POSTGRES_PASSWORD": "password",
       "POSTGRES_DB": "app_db"
     },
-    "versions": ["latest", "17", "16", "15"]
+    "versions": ["17", "16", "15", "latest"]
   },
   {
     "id": "mariadb",
@@ -46,14 +132,14 @@
     "service_type": "database",
     "category": "Databases",
     "ports": [3306],
-    "volumes": ["mariadb_data:/var/lib/mysql"],
+    "volumes": ["data:/var/lib/mysql"],
     "env": {
       "MARIADB_ROOT_PASSWORD": "root",
       "MARIADB_DATABASE": "app_db",
       "MARIADB_USER": "user",
       "MARIADB_PASSWORD": "password"
     },
-    "versions": ["latest", "11.4", "10.11", "10.6"]
+    "versions": ["11.4", "10.11", "10.6", "latest"]
   },
   {
     "id": "redis",
@@ -65,9 +151,9 @@
     "service_type": "database",
     "category": "Databases",
     "ports": [6379],
-    "volumes": ["redis_data:/data"],
+    "volumes": ["data:/data"],
     "env": {},
-    "versions": ["latest", "7.4", "7.2", "6.2"]
+    "versions": ["7.4", "7.2", "6.2", "latest"]
   },
   {
     "id": "mongodb",
@@ -79,12 +165,12 @@
     "service_type": "database",
     "category": "Databases",
     "ports": [27017],
-    "volumes": ["mongo_data:/data/db"],
+    "volumes": ["data:/data/db"],
     "env": {
       "MONGO_INITDB_ROOT_USERNAME": "root",
       "MONGO_INITDB_ROOT_PASSWORD": "password"
     },
-    "versions": ["latest", "8.0", "7.0", "6.0"]
+    "versions": ["8.0", "7.0", "6.0", "latest"]
   },
   {
     "id": "phpmyadmin",
@@ -102,7 +188,7 @@
         "PMA_PORT": "3306",
         "UPLOAD_LIMIT": "64M"
     },
-    "versions": ["latest", "5.2"]
+    "versions": ["5.2", "latest"]
   },
   {
     "id": "adminer",
@@ -118,7 +204,7 @@
     "env": {
         "ADMINER_DEFAULT_SERVER": "mysql"
     },
-    "versions": ["latest", "4.8"]
+    "versions": ["4.8", "latest"]
   },
   {
     "id": "portainer",
@@ -130,39 +216,9 @@
     "service_type": "image",
     "category": "Management Tools",
     "ports": [9000, 9443],
-    "volumes": ["portainer_data:/data", "/var/run/docker.sock:/var/run/docker.sock"],
+    "volumes": ["data:/data", "/var/run/docker.sock:/var/run/docker.sock"],
     "env": {},
-    "versions": ["latest", "2.21", "2.19"]
-  },
-  {
-    "id": "nginx",
-    "name": "Nginx",
-    "icon": "web",
-    "logo": "https://cdn.simpleicons.org/nginx/009639",
-    "description": "High performance web server",
-    "image": "nginx",
-    "service_type": "image",
-    "category": "Web Servers",
-    "ports": [80],
-    "volumes": ["nginx_html:/usr/share/nginx/html", "nginx_conf:/etc/nginx/conf.d"],
-    "env": {
-        "TZ": "Asia/Jakarta"
-    },
-    "versions": ["latest", "alpine", "1.27"]
-  },
-  {
-    "id": "caddy",
-    "name": "Caddy",
-    "icon": "web",
-    "logo": "https://cdn.simpleicons.org/caddy/00ADD8",
-    "description": "Powerful, enterprise-ready, open source web server with automatic HTTPS",
-    "image": "caddy",
-    "service_type": "image",
-    "category": "Web Servers",
-    "ports": [80, 443],
-    "volumes": ["caddy_data:/data", "caddy_config:/config", "./Caddyfile:/etc/caddy/Caddyfile"],
-    "env": {},
-    "versions": ["latest", "alpine", "2.8"]
+    "versions": ["2.21", "2.19", "latest"]
   },
   {
     "id": "plex",
@@ -174,7 +230,7 @@
     "service_type": "image",
     "category": "Media",
     "ports": [32400],
-    "volumes": ["plex_config:/config", "media_data:/data"],
+    "volumes": ["config:/config", "media_data:/data"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta", "VERSION": "docker" },
     "versions": ["latest"]
   },
@@ -188,9 +244,9 @@
     "service_type": "image",
     "category": "Media",
     "ports": [8096],
-    "volumes": ["jellyfin_config:/config", "jellyfin_cache:/cache", "media_data:/media"],
+    "volumes": ["config:/config", "cache:/cache", "media_data:/media"],
     "env": {},
-    "versions": ["latest", "10.9"]
+    "versions": ["10.9", "latest"]
   },
   {
     "id": "emby",
@@ -202,9 +258,29 @@
     "service_type": "image",
     "category": "Media",
     "ports": [8096],
-    "volumes": ["emby_config:/config", "media_data:/data"],
+    "volumes": ["config:/config", "media_data:/data"],
     "env": { "UID": "1000", "GID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "4.8"]
+    "versions": ["4.8", "latest"]
+  },
+  {
+    "id": "immich",
+    "name": "Immich",
+    "icon": "photo_library",
+    "logo": "https://cdn.simpleicons.org/immich/000000",
+    "description": "High performance self-hosted photo and video management solution",
+    "image": "ghcr.io/immich-app/immich-server",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [2283],
+    "volumes": ["upload:/usr/src/app/upload"],
+    "env": {
+        "DB_HOSTNAME": "postgres",
+        "DB_USERNAME": "postgres",
+        "DB_PASSWORD": "password",
+        "DB_DATABASE_NAME": "immich",
+        "REDIS_HOSTNAME": "redis"
+    },
+    "versions": ["release", "latest"]
   },
   {
     "id": "tautulli",
@@ -216,7 +292,7 @@
     "service_type": "image",
     "category": "Media",
     "ports": [8181],
-    "volumes": ["tautulli_config:/config"],
+    "volumes": ["config:/config"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
     "versions": ["latest"]
   },
@@ -230,161 +306,7 @@
     "service_type": "image",
     "category": "Media",
     "ports": [5055],
-    "volumes": ["overseerr_config:/config"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "sonarr",
-    "name": "Sonarr",
-    "icon": "tv",
-    "logo": "https://cdn.simpleicons.org/sonarr/2196F3",
-    "description": "Smart PVR for newsgroup and bittorrent users",
-    "image": "linuxserver/sonarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [8989],
-    "volumes": ["sonarr_config:/config", "media_data:/data"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "develop"]
-  },
-  {
-    "id": "radarr",
-    "name": "Radarr",
-    "icon": "movie",
-    "logo": "https://cdn.simpleicons.org/radarr/FFC230",
-    "description": "Movie collection manager",
-    "image": "linuxserver/radarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [7878],
-    "volumes": ["radarr_config:/config", "media_data:/data"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "develop"]
-  },
-  {
-    "id": "lidarr",
-    "name": "Lidarr",
-    "icon": "music_note",
-    "logo": "https://cdn.simpleicons.org/lidarr/00BC8C",
-    "description": "Music collection manager",
-    "image": "linuxserver/lidarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [8686],
-    "volumes": ["lidarr_config:/config", "media_data:/data"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "develop"]
-  },
-  {
-    "id": "readarr",
-    "name": "Readarr",
-    "icon": "book",
-    "logo": "https://cdn.simpleicons.org/readarr/8E2DE2",
-    "description": "eBook and audiobook collection manager",
-    "image": "linuxserver/readarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [8787],
-    "volumes": ["readarr_config:/config", "media_data:/data"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["develop", "nightly"]
-  },
-  {
-    "id": "bazarr",
-    "name": "Bazarr",
-    "icon": "subtitles",
-    "logo": "https://cdn.simpleicons.org/bazarr/94398D",
-    "description": "Companion to Sonarr and Radarr for subtitles",
-    "image": "linuxserver/bazarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [6767],
-    "volumes": ["bazarr_config:/config", "media_data:/data"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "prowlarr",
-    "name": "Prowlarr",
-    "icon": "search",
-    "logo": "https://cdn.simpleicons.org/prowlarr/FFA500",
-    "description": "Indexer manager for Sonarr, Radarr, Lidarr",
-    "image": "linuxserver/prowlarr",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [9696],
-    "volumes": ["prowlarr_config:/config"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "develop"]
-  },
-  {
-    "id": "transmission",
-    "name": "Transmission",
-    "icon": "download",
-    "logo": "https://cdn.simpleicons.org/transmission/DA291C",
-    "description": "Fast, easy, and free BitTorrent client",
-    "image": "linuxserver/transmission",
-    "service_type": "image",
-    "category": "Downloads",
-    "ports": [9091, 51413],
-    "volumes": ["transmission_config:/config", "media_data:/downloads"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "qbittorrent",
-    "name": "qBittorrent",
-    "icon": "download",
-    "logo": "https://cdn.simpleicons.org/qbittorrent/2F67BA",
-    "description": "Free and reliable P2P BitTorrent client",
-    "image": "linuxserver/qbittorrent",
-    "service_type": "image",
-    "category": "Downloads",
-    "ports": [8080, 6881],
-    "volumes": ["qbittorrent_config:/config", "media_data:/downloads"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta", "WEBUI_PORT": "8080" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "sabnzbd",
-    "name": "SABnzbd",
-    "icon": "download",
-    "logo": "https://cdn.simpleicons.org/sabnzbd/FBBF40",
-    "description": "Free and easy binary newsreader",
-    "image": "linuxserver/sabnzbd",
-    "service_type": "image",
-    "category": "Downloads",
-    "ports": [8080],
-    "volumes": ["sabnzbd_config:/config", "media_data:/downloads"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "deluge",
-    "name": "Deluge",
-    "icon": "download",
-    "logo": "https://cdn.simpleicons.org/deluge/497EDE",
-    "description": "Lightweight, cross-platform BitTorrent client",
-    "image": "linuxserver/deluge",
-    "service_type": "image",
-    "category": "Downloads",
-    "ports": [8112, 6881],
-    "volumes": ["deluge_config:/config", "media_data:/downloads"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "nzbget",
-    "name": "NZBGet",
-    "icon": "download",
-    "logo": "https://cdn.simpleicons.org/nzbget/44BB44",
-    "description": "Efficient usenet downloader",
-    "image": "linuxserver/nzbget",
-    "service_type": "image",
-    "category": "Downloads",
-    "ports": [6789],
-    "volumes": ["nzbget_config:/config", "media_data:/downloads"],
+    "volumes": ["config:/config"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
     "versions": ["latest"]
   },
@@ -398,9 +320,93 @@
     "service_type": "image",
     "category": "Media",
     "ports": [3579],
-    "volumes": ["ombi_config:/config"],
+    "volumes": ["config:/config"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["4.4", "latest"]
+  },
+  {
+    "id": "sonarr",
+    "name": "Sonarr",
+    "icon": "tv",
+    "logo": "https://cdn.simpleicons.org/sonarr/2196F3",
+    "description": "Smart PVR for newsgroup and bittorrent users",
+    "image": "linuxserver/sonarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [8989],
+    "volumes": ["config:/config", "media_data:/data"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["4.0", "develop", "latest"]
+  },
+  {
+    "id": "radarr",
+    "name": "Radarr",
+    "icon": "movie",
+    "logo": "https://cdn.simpleicons.org/radarr/FFC230",
+    "description": "Movie collection manager",
+    "image": "linuxserver/radarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [7878],
+    "volumes": ["config:/config", "media_data:/data"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["5.0", "develop", "latest"]
+  },
+  {
+    "id": "lidarr",
+    "name": "Lidarr",
+    "icon": "music_note",
+    "logo": "https://cdn.simpleicons.org/lidarr/00BC8C",
+    "description": "Music collection manager",
+    "image": "linuxserver/lidarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [8686],
+    "volumes": ["config:/config", "media_data:/data"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["2.0", "develop", "latest"]
+  },
+  {
+    "id": "readarr",
+    "name": "Readarr",
+    "icon": "book",
+    "logo": "https://cdn.simpleicons.org/readarr/8E2DE2",
+    "description": "eBook and audiobook collection manager",
+    "image": "linuxserver/readarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [8787],
+    "volumes": ["config:/config", "media_data:/data"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["develop", "nightly", "latest"]
+  },
+  {
+    "id": "bazarr",
+    "name": "Bazarr",
+    "icon": "subtitles",
+    "logo": "https://cdn.simpleicons.org/bazarr/94398D",
+    "description": "Companion to Sonarr and Radarr for subtitles",
+    "image": "linuxserver/bazarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [6767],
+    "volumes": ["config:/config", "media_data:/data"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
     "versions": ["latest"]
+  },
+  {
+    "id": "prowlarr",
+    "name": "Prowlarr",
+    "icon": "search",
+    "logo": "https://cdn.simpleicons.org/prowlarr/FFA500",
+    "description": "Indexer manager for Sonarr, Radarr, Lidarr",
+    "image": "linuxserver/prowlarr",
+    "service_type": "image",
+    "category": "Media",
+    "ports": [9696],
+    "volumes": ["config:/config"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["1.21", "develop", "latest"]
   },
   {
     "id": "audiobookshelf",
@@ -412,7 +418,7 @@
     "service_type": "image",
     "category": "Media",
     "ports": [13378],
-    "volumes": ["audiobookshelf_config:/config", "audiobooks_data:/audiobooks", "podcasts_data:/podcasts", "metadata:/metadata"],
+    "volumes": ["config:/config", "audiobooks:/audiobooks", "podcasts:/podcasts", "metadata:/metadata"],
     "env": { "TZ": "Asia/Jakarta", "AUDIOBOOKSHELF_UID": "1000", "AUDIOBOOKSHELF_GID": "1000" },
     "versions": ["latest"]
   },
@@ -426,9 +432,9 @@
     "service_type": "image",
     "category": "Media",
     "ports": [5000],
-    "volumes": ["kavita_config:/kavita/config", "manga_data:/manga"],
+    "volumes": ["config:/kavita/config", "manga:/manga"],
     "env": { "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "stable"]
+    "versions": ["stable", "latest"]
   },
   {
     "id": "komga",
@@ -440,8 +446,186 @@
     "service_type": "image",
     "category": "Media",
     "ports": [25600],
-    "volumes": ["komga_config:/config", "comics_data:/data"],
+    "volumes": ["config:/config", "comics:/data"],
     "env": { "TZ": "Asia/Jakarta" },
+    "versions": ["latest"]
+  },
+  {
+    "id": "transmission",
+    "name": "Transmission",
+    "icon": "download",
+    "logo": "https://cdn.simpleicons.org/transmission/DA291C",
+    "description": "Fast, easy, and free BitTorrent client",
+    "image": "linuxserver/transmission",
+    "service_type": "image",
+    "category": "Downloads",
+    "ports": [9091, 51413],
+    "volumes": ["config:/config", "media_data:/downloads"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["4.0", "latest"]
+  },
+  {
+    "id": "qbittorrent",
+    "name": "qBittorrent",
+    "icon": "download",
+    "logo": "https://cdn.simpleicons.org/qbittorrent/2F67BA",
+    "description": "Free and reliable P2P BitTorrent client",
+    "image": "linuxserver/qbittorrent",
+    "service_type": "image",
+    "category": "Downloads",
+    "ports": [8080, 6881],
+    "volumes": ["config:/config", "media_data:/downloads"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta", "WEBUI_PORT": "8080" },
+    "versions": ["4.6", "latest"]
+  },
+  {
+    "id": "sabnzbd",
+    "name": "SABnzbd",
+    "icon": "download",
+    "logo": "https://cdn.simpleicons.org/sabnzbd/FBBF40",
+    "description": "Free and easy binary newsreader",
+    "image": "linuxserver/sabnzbd",
+    "service_type": "image",
+    "category": "Downloads",
+    "ports": [8080],
+    "volumes": ["config:/config", "media_data:/downloads"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["4.3", "latest"]
+  },
+  {
+    "id": "deluge",
+    "name": "Deluge",
+    "icon": "download",
+    "logo": "https://cdn.simpleicons.org/deluge/497EDE",
+    "description": "Lightweight, cross-platform BitTorrent client",
+    "image": "linuxserver/deluge",
+    "service_type": "image",
+    "category": "Downloads",
+    "ports": [8112, 6881],
+    "volumes": ["config:/config", "media_data:/downloads"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["2.1", "latest"]
+  },
+  {
+    "id": "nzbget",
+    "name": "NZBGet",
+    "icon": "download",
+    "logo": "https://cdn.simpleicons.org/nzbget/44BB44",
+    "description": "Efficient usenet downloader",
+    "image": "linuxserver/nzbget",
+    "service_type": "image",
+    "category": "Downloads",
+    "ports": [6789],
+    "volumes": ["config:/config", "media_data:/downloads"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["latest"]
+  },
+  {
+    "id": "nextcloud",
+    "name": "Nextcloud",
+    "icon": "cloud_sync",
+    "logo": "https://cdn.simpleicons.org/nextcloud/0082C9",
+    "description": "Productivity platform",
+    "image": "nextcloud",
+    "service_type": "image",
+    "category": "Productivity",
+    "ports": [80],
+    "volumes": ["data:/var/www/html"],
+    "env": {
+        "MYSQL_HOST": "mysql",
+        "MYSQL_DATABASE": "nextcloud",
+        "MYSQL_USER": "nextcloud",
+        "MYSQL_PASSWORD": "password"
+    },
+    "versions": ["29", "28", "latest"]
+  },
+  {
+    "id": "paperless-ngx",
+    "name": "Paperless-ngx",
+    "icon": "description",
+    "logo": "https://cdn.simpleicons.org/paperlessngx/1C1C1C",
+    "description": "Community-supported supercharged version of paperless: scan, index and archive all your physical documents",
+    "image": "ghcr.io/paperless-ngx/paperless-ngx",
+    "service_type": "image",
+    "category": "Productivity",
+    "ports": [8000],
+    "volumes": ["data:/usr/src/paperless/data", "media:/usr/src/paperless/media", "consume:/usr/src/paperless/consume"],
+    "env": {
+        "USERMAP_UID": "1000",
+        "USERMAP_GID": "1000",
+        "PAPERLESS_TIME_ZONE": "Asia/Jakarta",
+        "PAPERLESS_URL": "http://localhost:8000"
+    },
+    "versions": ["2.10", "latest"]
+  },
+  {
+    "id": "filebrowser",
+    "name": "Filebrowser",
+    "icon": "folder",
+    "logo": "https://cdn.simpleicons.org/files/000000",
+    "description": "Web-based file manager",
+    "image": "filebrowser/filebrowser",
+    "service_type": "image",
+    "category": "Productivity",
+    "ports": [80],
+    "volumes": ["root:/srv", "db:/database.db"],
+    "env": {},
+    "versions": ["v2", "latest"]
+  },
+  {
+    "id": "syncthing",
+    "name": "Syncthing",
+    "icon": "sync",
+    "logo": "https://cdn.simpleicons.org/syncthing/0088CE",
+    "description": "Open Source Continuous File Synchronization",
+    "image": "linuxserver/syncthing",
+    "service_type": "image",
+    "category": "Productivity",
+    "ports": [8384, 22000, 21027],
+    "volumes": ["config:/config", "data:/data1"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["latest"]
+  },
+  {
+    "id": "minio",
+    "name": "MinIO",
+    "icon": "cloud",
+    "logo": "https://cdn.simpleicons.org/minio/C72E49",
+    "description": "High Performance Object Storage",
+    "image": "minio/minio",
+    "service_type": "image",
+    "category": "Storage",
+    "ports": [9000, 9001],
+    "volumes": ["data:/data"],
+    "env": { "MINIO_ROOT_USER": "admin", "MINIO_ROOT_PASSWORD": "password" },
+    "versions": ["latest"]
+  },
+  {
+    "id": "duplicati",
+    "name": "Duplicati",
+    "icon": "backup",
+    "logo": "https://cdn.simpleicons.org/duplicati/70A5C2",
+    "description": "Backup client",
+    "image": "linuxserver/duplicati",
+    "service_type": "image",
+    "category": "Storage",
+    "ports": [8200],
+    "volumes": ["config:/config", "backups:/backups", "source:/source"],
+    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
+    "versions": ["latest"]
+  },
+  {
+    "id": "vaultwarden",
+    "name": "Vaultwarden",
+    "icon": "lock",
+    "logo": "https://cdn.simpleicons.org/vaultwarden/175DDC",
+    "description": "Unofficial Bitwarden compatible server",
+    "image": "vaultwarden/server",
+    "service_type": "image",
+    "category": "Security",
+    "ports": [80],
+    "volumes": ["data:/data"],
+    "env": { "SIGNUPS_ALLOWED": "true", "DOMAIN": "https://vw.domain.com" },
     "versions": ["latest"]
   },
   {
@@ -454,7 +638,7 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [3001],
-    "volumes": ["uptime-kuma:/app/data"],
+    "volumes": ["data:/app/data"],
     "env": {},
     "versions": ["1", "latest"]
   },
@@ -468,9 +652,9 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [3000],
-    "volumes": ["grafana_data:/var/lib/grafana"],
+    "volumes": ["data:/var/lib/grafana"],
     "env": { "GF_SECURITY_ADMIN_PASSWORD": "admin" },
-    "versions": ["latest", "11.0", "10.4"]
+    "versions": ["11.0", "10.4", "latest"]
   },
   {
     "id": "prometheus",
@@ -482,9 +666,9 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [9090],
-    "volumes": ["prometheus_data:/prometheus", "prometheus_config:/etc/prometheus"],
+    "volumes": ["data:/prometheus", "config:/etc/prometheus"],
     "env": {},
-    "versions": ["latest", "v2.54"]
+    "versions": ["v2.54", "latest"]
   },
   {
     "id": "gitea",
@@ -496,9 +680,9 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [3000, 2222],
-    "volumes": ["gitea_data:/data", "/etc/timezone:/etc/timezone:ro", "/etc/localtime:/etc/localtime:ro"],
+    "volumes": ["data:/data", "/etc/timezone:/etc/timezone:ro", "/etc/localtime:/etc/localtime:ro"],
     "env": { "USER_UID": "1000", "USER_GID": "1000" },
-    "versions": ["latest", "1.22"]
+    "versions": ["1.22", "latest"]
   },
   {
     "id": "jenkins",
@@ -510,7 +694,7 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [8080, 50000],
-    "volumes": ["jenkins_home:/var/jenkins_home"],
+    "volumes": ["home:/var/jenkins_home"],
     "env": {},
     "versions": ["lts", "latest"]
   },
@@ -524,7 +708,7 @@
     "service_type": "image",
     "category": "DevOps",
     "ports": [80],
-    "volumes": ["drone_data:/data"],
+    "volumes": ["data:/data"],
     "env": {
       "DRONE_GITHUB_CLIENT_ID": "change_me",
       "DRONE_GITHUB_CLIENT_SECRET": "change_me",
@@ -533,67 +717,6 @@
       "DRONE_SERVER_PROTO": "https"
     },
     "versions": ["2", "latest"]
-  },
-  {
-    "id": "vaultwarden",
-    "name": "Vaultwarden",
-    "icon": "lock",
-    "logo": "https://cdn.simpleicons.org/vaultwarden/175DDC",
-    "description": "Unofficial Bitwarden compatible server",
-    "image": "vaultwarden/server",
-    "service_type": "image",
-    "category": "Security",
-    "ports": [80],
-    "volumes": ["vaultwarden_data:/data"],
-    "env": { "SIGNUPS_ALLOWED": "true", "DOMAIN": "https://vw.domain.com" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "minio",
-    "name": "MinIO",
-    "icon": "cloud",
-    "logo": "https://cdn.simpleicons.org/minio/C72E49",
-    "description": "High Performance Object Storage",
-    "image": "minio/minio",
-    "service_type": "image",
-    "category": "Storage",
-    "ports": [9000, 9001],
-    "volumes": ["minio_data:/data"],
-    "env": { "MINIO_ROOT_USER": "admin", "MINIO_ROOT_PASSWORD": "password" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "nextcloud",
-    "name": "Nextcloud",
-    "icon": "cloud_sync",
-    "logo": "https://cdn.simpleicons.org/nextcloud/0082C9",
-    "description": "Productivity platform",
-    "image": "nextcloud",
-    "service_type": "image",
-    "category": "Productivity",
-    "ports": [80],
-    "volumes": ["nextcloud_data:/var/www/html"],
-    "env": {
-        "MYSQL_HOST": "mysql",
-        "MYSQL_DATABASE": "nextcloud",
-        "MYSQL_USER": "nextcloud",
-        "MYSQL_PASSWORD": "password"
-    },
-    "versions": ["latest", "29", "28"]
-  },
-  {
-    "id": "duplicati",
-    "name": "Duplicati",
-    "icon": "backup",
-    "logo": "https://cdn.simpleicons.org/duplicati/70A5C2",
-    "description": "Backup client",
-    "image": "linuxserver/duplicati",
-    "service_type": "image",
-    "category": "Storage",
-    "ports": [8200],
-    "volumes": ["duplicati_config:/config", "duplicati_backups:/backups", "source_data:/source"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
   },
   {
     "id": "mosquitto",
@@ -605,9 +728,9 @@
     "service_type": "image",
     "category": "IoT",
     "ports": [1883, 9001],
-    "volumes": ["mosquitto_config:/mosquitto/config", "mosquitto_data:/mosquitto/data", "mosquitto_log:/mosquitto/log"],
+    "volumes": ["config:/mosquitto/config", "data:/mosquitto/data", "log:/mosquitto/log"],
     "env": {},
-    "versions": ["latest", "2.0"]
+    "versions": ["2.0", "latest"]
   },
   {
     "id": "rabbitmq",
@@ -619,9 +742,9 @@
     "service_type": "image",
     "category": "IoT",
     "ports": [5672, 15672],
-    "volumes": ["rabbitmq_data:/var/lib/rabbitmq"],
+    "volumes": ["data:/var/lib/rabbitmq"],
     "env": { "RABBITMQ_DEFAULT_USER": "guest", "RABBITMQ_DEFAULT_PASS": "guest" },
-    "versions": ["management", "3.13-management"]
+    "versions": ["3.13-management", "management"]
   },
   {
     "id": "nodered",
@@ -633,9 +756,9 @@
     "service_type": "image",
     "category": "IoT",
     "ports": [1880],
-    "volumes": ["nodered_data:/data"],
+    "volumes": ["data:/data"],
     "env": { "TZ": "Asia/Jakarta" },
-    "versions": ["latest", "3.1"]
+    "versions": ["3.1", "latest"]
   },
   {
     "id": "homeassistant",
@@ -647,7 +770,7 @@
     "service_type": "image",
     "category": "IoT",
     "ports": [8123],
-    "volumes": ["homeassistant_config:/config"],
+    "volumes": ["config:/config"],
     "env": { "TZ": "Asia/Jakarta" },
     "versions": ["stable", "latest"]
   },
@@ -661,7 +784,7 @@
     "service_type": "image",
     "category": "Automation",
     "ports": [5678],
-    "volumes": ["n8n_data:/home/node/.n8n"],
+    "volumes": ["data:/home/node/.n8n"],
     "env": { "GENERIC_TIMEZONE": "Asia/Jakarta" },
     "versions": ["latest"]
   },
@@ -675,14 +798,14 @@
     "service_type": "image",
     "category": "CMS",
     "ports": [80],
-    "volumes": ["wordpress_data:/var/www/html"],
+    "volumes": ["data:/var/www/html"],
     "env": {
         "WORDPRESS_DB_HOST": "mysql",
         "WORDPRESS_DB_USER": "wordpress",
         "WORDPRESS_DB_PASSWORD": "password",
         "WORDPRESS_DB_NAME": "wordpress"
     },
-    "versions": ["latest", "php8.3", "php8.2"]
+    "versions": ["php8.3", "php8.2", "latest"]
   },
   {
     "id": "ghost",
@@ -694,9 +817,9 @@
     "service_type": "image",
     "category": "CMS",
     "ports": [2368],
-    "volumes": ["ghost_content:/var/lib/ghost/content"],
+    "volumes": ["content:/var/lib/ghost/content"],
     "env": { "url": "http://localhost:2368", "database__client": "sqlite3" },
-    "versions": ["latest", "5", "alpine"]
+    "versions": ["5", "alpine", "latest"]
   },
   {
     "id": "code-server",
@@ -708,131 +831,8 @@
     "service_type": "image",
     "category": "Development",
     "ports": [8443],
-    "volumes": ["codeserver_config:/config", "project_data:/home/coder/project"],
+    "volumes": ["config:/config", "project:/home/coder/project"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta", "PASSWORD": "password" },
     "versions": ["latest"]
-  },
-  {
-    "id": "adguardhome",
-    "name": "AdGuard Home",
-    "icon": "adguard",
-    "logo": "https://cdn.simpleicons.org/adguard/68BC71",
-    "description": "Network-wide ads & trackers blocking DNS server",
-    "image": "adguard/adguardhome",
-    "service_type": "image",
-    "category": "Network",
-    "ports": [3000, 53, 80],
-    "volumes": ["adguard_work:/opt/adguardhome/work", "adguard_conf:/opt/adguardhome/conf"],
-    "env": {},
-    "versions": ["latest", "beta"]
-  },
-  {
-    "id": "nginx-proxy-manager",
-    "name": "Nginx Proxy Manager",
-    "icon": "nginx",
-    "logo": "https://cdn.simpleicons.org/nginxproxymanager/F15833",
-    "description": "Docker container for managing Nginx proxy hosts with a simple UI",
-    "image": "jc21/nginx-proxy-manager",
-    "service_type": "image",
-    "category": "Network",
-    "ports": [81, 80, 443],
-    "volumes": ["npm_data:/data", "npm_letsencrypt:/etc/letsencrypt"],
-    "env": { "DB_SQLITE_FILE": "/data/database.sqlite" },
-    "versions": ["latest", "2.11"]
-  },
-  {
-    "id": "homarr",
-    "name": "Homarr",
-    "icon": "dashboard",
-    "logo": "https://cdn.simpleicons.org/homarr/F55555",
-    "description": "A simple and lightweight dashboard for your server",
-    "image": "ghcr.io/ajnart/homarr",
-    "service_type": "image",
-    "category": "Dashboard",
-    "ports": [7575],
-    "volumes": ["homarr_configs:/app/data/configs", "homarr_icons:/app/public/icons"],
-    "env": {},
-    "versions": ["latest", "rc"]
-  },
-  {
-    "id": "paperless-ngx",
-    "name": "Paperless-ngx",
-    "icon": "description",
-    "logo": "https://cdn.simpleicons.org/paperlessngx/1C1C1C",
-    "description": "Community-supported supercharged version of paperless: scan, index and archive all your physical documents",
-    "image": "ghcr.io/paperless-ngx/paperless-ngx",
-    "service_type": "image",
-    "category": "Productivity",
-    "ports": [8000],
-    "volumes": ["paperless_data:/usr/src/paperless/data", "paperless_media:/usr/src/paperless/media", "paperless_consume:/usr/src/paperless/consume"],
-    "env": {
-        "USERMAP_UID": "1000",
-        "USERMAP_GID": "1000",
-        "PAPERLESS_TIME_ZONE": "Asia/Jakarta",
-        "PAPERLESS_URL": "http://localhost:8000"
-    },
-    "versions": ["latest", "2.10"]
-  },
-  {
-    "id": "filebrowser",
-    "name": "Filebrowser",
-    "icon": "folder",
-    "logo": "https://cdn.simpleicons.org/files",
-    "description": "Web-based file manager",
-    "image": "filebrowser/filebrowser",
-    "service_type": "image",
-    "category": "Productivity",
-    "ports": [80],
-    "volumes": ["filebrowser_root:/srv", "filebrowser_db:/database.db"],
-    "env": {},
-    "versions": ["latest", "v2"]
-  },
-  {
-    "id": "syncthing",
-    "name": "Syncthing",
-    "icon": "sync",
-    "logo": "https://cdn.simpleicons.org/syncthing/0088CE",
-    "description": "Open Source Continuous File Synchronization",
-    "image": "linuxserver/syncthing",
-    "service_type": "image",
-    "category": "Productivity",
-    "ports": [8384, 22000, 21027],
-    "volumes": ["syncthing_config:/config", "syncthing_data:/data1"],
-    "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta" },
-    "versions": ["latest"]
-  },
-  {
-    "id": "immich",
-    "name": "Immich",
-    "icon": "photo_library",
-    "logo": "https://cdn.simpleicons.org/immich",
-    "description": "High performance self-hosted photo and video management solution",
-    "image": "ghcr.io/immich-app/immich-server",
-    "service_type": "image",
-    "category": "Media",
-    "ports": [2283],
-    "volumes": ["immich_upload:/usr/src/app/upload"],
-    "env": {
-        "DB_HOSTNAME": "postgres",
-        "DB_USERNAME": "postgres",
-        "DB_PASSWORD": "password",
-        "DB_DATABASE_NAME": "immich",
-        "REDIS_HOSTNAME": "redis"
-    },
-    "versions": ["release", "latest"]
-  },
-  {
-    "id": "tailscale",
-    "name": "Tailscale",
-    "icon": "vpn_lock",
-    "logo": "https://cdn.simpleicons.org/tailscale/EF3346",
-    "description": "Zero config VPN for secure networks",
-    "image": "tailscale/tailscale",
-    "service_type": "image",
-    "category": "Network",
-    "ports": [],
-    "volumes": ["tailscale_var_lib:/var/lib", "/dev/net/tun:/dev/net/tun"],
-    "env": { "TS_AUTH_KEY": "tskey-auth-..." },
-    "versions": ["stable", "latest"]
   }
 ]
