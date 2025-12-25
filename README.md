@@ -19,6 +19,33 @@
 - 🛡️ **Auto-Recovery** - Automatic health checks and service recovery
 - 🔐 **Secure Authentication** - Session-based auth with rate limiting
 
+## 📸 Screenshots
+
+### Dashboard Overview
+![Dashboard](images/dashboard.png)
+
+Manage all your Docker containers from one beautiful dashboard with real-time status and quick actions.
+
+### Template Library
+![Templates](images/templates.png)
+
+Deploy popular services with one click. Choose from 20+ ready-to-use templates including databases, monitoring tools, and more.
+
+### Service Detail
+![Service Detail](images/service-detail.png)
+
+Monitor container resources, view real-time logs, manage ports, volumes, and environment variables in one place.
+
+### File Manager
+![File Manager](images/filemanager.png)
+
+Browse and manage files in container volumes directly from the web UI. Upload, download, edit files with ease.
+
+### DNS Management
+![DNS Management](images/dns-management.png)
+
+Configure custom domains and SSL certificates with integrated Traefik reverse proxy management.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
