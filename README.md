@@ -3,210 +3,109 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)
 
-DockerAZ is a comprehensive management platform designed to run as a **native binary** on your host system. It orchestrates Docker containers, manages services, and handles deployments securely and efficiently.
+**DockerAZ** is a comprehensive management platform designed to run as a **native binary** on your host system. It orchestrates Docker containers, manages services, and handles deployments securely and efficiently.
 
-**Note:** DockerAZ runs directly on the host (outside of Docker) to ensure maximum compatibility and direct control over the Docker daemon.
+> **📚 Complete Documentation:** Visit **[https://dockeraz.wiki](https://dockeraz.wiki)** for full documentation, guides, and API references.
 
-## ✨ Features
+## ✨ Key Features
 
-- 🐳 **Host-Level Management** - Direct control of the Docker daemon via socket.
-- 🔄 **Global Deployment History** - Track deployment status and history across all services.
-- 🚦 **Traefik Management Dashboard** - Dedicated UI to monitor and control Traefik Proxy.
-- 🛡️ **Auto-Recovery System** - Aggressive health checks that automatically resolve port conflicts and restart critical services like Traefik.
-- 📉 **Service Stats** - Real-time CPU, RAM, Disk I/O, and Network stats for every container.
-- 📂 **File Manager** - Built-in browser to manage volume data and configuration files.
-- 🌐 **Auto-SSL & Reverse Proxy** - Integrated Traefik configuration with automatic Let's Encrypt SSL.
-- ☁️ **Cloudflare Tunnel** - Seamless integration for secure remote access without port forwarding.
-- 🚀 **Zero-Downtime Deployments** - Rolling updates for services.
+- 🐳 **Host-Level Management** - Direct control of the Docker daemon via socket
+- 🚀 **Git & Docker Compose Deployment** - Deploy from Git repos or compose files
+- 📦 **Template Library** - One-click deployment for popular services
+- 🌐 **Auto-SSL & Reverse Proxy** - Integrated Traefik with Let's Encrypt
+- ☁️ **Cloudflare Tunnel** - Secure remote access without port forwarding
+- 📊 **Resource Monitoring** - Real-time CPU, RAM, and Network stats
+- 📂 **File Manager** - Built-in browser for volume management
+- 🛡️ **Auto-Recovery** - Automatic health checks and service recovery
+- 🔐 **Secure Authentication** - Session-based auth with rate limiting
 
-## 🚀 Installation & Usage
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Linux system (Ubuntu/Debian recommended)
 - **Root Access** (Must run as root) - `sudo -i`
 
-### One-Click Installation
-
-The easiest way to install DockerAZ is using the automatic installer. This script will:
-1. Install dependencies (`lsof`, `zip`, `curl`, etc.)
-2. Install Docker (if missing)
-3. Download the latest DockerAZ binary for your architecture (AMD64, ARM64, ARMv7)
-4. Setup and start the Systemd service
-
-Run as **root**:
+### One-Line Installation
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rickicode/DockerAZ/main/installer.sh | sudo bash
 ```
 
-After installation, access your dashboard at: `http://YOUR_SERVER_IP:3012`
-
-## 🔧 Configuration
-
-DockerAZ uses a persistent SQLite database and local files.
-
-**Default Data Directory:** `/opt/DockerAZ`
-
-| Directory | Purpose |
-|---|---|
-| `data/` | Database (`dockeraz.db`) and secrets |
-| `logs/` | Application and deployment logs |
-| `repos/` | Cloned Git repositories |
-
-## 🛠️ Advanced Features
-
-### Traefik Auto-Recovery
-DockerAZ includes an aggressive recovery system for the Traefik proxy. On startup:
-1. It checks if ports **80**, **443**, and **8080** are free.
-2. If blocked, it attempts to **kill the blocking process** automatically.
-3. If Traefik is in a bad state, it **force recreates** the container.
-
-### Monitoring
-- **Disk Usage**: Monitors host disk usage to prevent "No space left on device" errors.
-- **Service Stats**: Detailed resource consumption tables for all running containers.
-
-## ❓ FAQ
-
-### Bagaimana cara reset password/username?
-
-**Cara Termudah (CLI Command):**
-
-```bash
-# Stop service terlebih dahulu
-sudo systemctl stop dockeraz
-
-# Reset password via CLI
-/usr/local/bin/dockeraz reset-password
-
-# Start ulang service
-sudo systemctl start dockeraz
-```
-
-Sistem akan meminta password baru secara interaktif.
-
-**Alternatif (Hapus Database - reset semua data!):**
-
-```bash
-# Stop service
-sudo systemctl stop dockeraz
-
-# Hapus database (ini akan menghapus SEMUA data termasuk services!)
-sudo rm /opt/DockerAZ/data/dockeraz.db
-
-# Start ulang - akan diminta setup username/password baru
-sudo systemctl start dockeraz
-```
+After installation, access your dashboard at: **`http://YOUR_SERVER_IP:3012`**
 
 ### CLI Commands
 
-```
-dockeraz                     # Tampilkan info aplikasi
-dockeraz server              # Jalankan server
-dockeraz help                # Tampilkan bantuan lengkap
-dockeraz version             # Tampilkan versi
-dockeraz reset-password      # Reset password admin
-
-# Environment Variables
-PORT=8080 dockeraz server    # Jalankan di port 8080
+```bash
+dockeraz                     # Show application info
+dockeraz server              # Start the server
+dockeraz reset-password      # Reset admin password
+dockeraz version             # Show version
+dockeraz help                # Show help
 ```
 
-### Port 3012 sudah digunakan, bagaimana cara ganti port?
-
-Edit file service systemd:
+### Change Port
 
 ```bash
+# Edit systemd service
 sudo nano /etc/systemd/system/dockeraz.service
-```
 
-Tambahkan environment variable `PORT`:
-
-```ini
+# Add environment variable
 [Service]
 Environment="PORT=8080"
-```
 
-Kemudian reload dan restart:
-
-```bash
+# Reload and restart
 sudo systemctl daemon-reload
 sudo systemctl restart dockeraz
 ```
 
-### Bagaimana cara melihat log error?
+## 📚 Full Documentation
+
+For detailed information, visit:
+
+- **📖 [Documentation](https://dockeraz.wiki)** - Complete guides and tutorials
+- **🚀 [Installation Guide](https://dockeraz.wiki)** - Detailed setup instructions
+- **⚙️ [Configuration](https://dockeraz.wiki)** - Advanced configuration options
+- **❓ [FAQ](https://dockeraz.wiki)** - Common questions and solutions
+- **🐛 [Troubleshooting](https://dockeraz.wiki)** - Debug and fix issues
+
+## 📂 Default Locations
+
+| Path | Description |
+|---|---|
+| `/opt/DockerAZ/data/` | Database and secrets |
+| `/opt/DockerAZ/logs/` | Application logs |
+| `/opt/DockerAZ/repos/` | Git repositories |
+| `/usr/local/bin/dockeraz` | Binary executable |
+
+## 🔧 System Commands
 
 ```bash
-# Log systemd (realtime)
+# View logs (realtime)
 sudo journalctl -u dockeraz -f
 
-# Log file
-cat /opt/DockerAZ/logs/dockeraz.log
-```
-
-### Traefik tidak bisa start, port 80/443 busy?
-
-DockerAZ memiliki sistem auto-recovery yang akan otomatis kill proses yang menggunakan port tersebut. Jika masih gagal:
-
-```bash
-# Cek proses yang menggunakan port
-sudo lsof -i :80
-sudo lsof -i :443
-
-# Kill manual jika perlu
-sudo kill -9 <PID>
-
-# Restart dockeraz
+# Restart service
 sudo systemctl restart dockeraz
-```
 
-### Bagaimana cara update ke versi terbaru?
-
-```bash
 # Stop service
 sudo systemctl stop dockeraz
 
-# Download binary baru (ganti dengan arsitektur anda: amd64, arm64, armv7)
-curl -L https://github.com/rickicode/DockerAZ/releases/latest/download/dockeraz-linux-amd64 -o /usr/local/bin/dockeraz
-chmod +x /usr/local/bin/dockeraz
-
-# Start ulang
-sudo systemctl start dockeraz
-```
-
-### Dimana lokasi file konfigurasi?
-
-| Path | Deskripsi |
-|---|---|
-| `/opt/DockerAZ/data/dockeraz.db` | Database SQLite (users, services, settings) |
-| `/opt/DockerAZ/letsencrypt/acme.json` | SSL certificates dari Let's Encrypt |
-| `/opt/DockerAZ/repos/` | Git repositories yang di-clone |
-| `/opt/DockerAZ/logs/` | Log files |
-
-### Bagaimana cara backup data?
-
-```bash
-# Backup database dan data penting
-sudo tar -czvf dockeraz-backup-$(date +%Y%m%d).tar.gz /opt/DockerAZ/data /opt/DockerAZ/letsencrypt
-```
-
-### Docker socket permission denied?
-
-DockerAZ harus dijalankan sebagai **root** untuk mengakses Docker socket. Pastikan service berjalan dengan user root:
-
-```bash
-# Cek status
+# Check status
 sudo systemctl status dockeraz
-
-# Pastikan berjalan sebagai root
-ps aux | grep dockeraz
 ```
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create feature branch
-3. Submit Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-MIT License
+MIT License - see LICENSE file for details
+
+---
+
+**🔗 Links:**
+- [Documentation](https://dockeraz.wiki)
+- [GitHub Repository](https://github.com/rickicode/DockerAZ)
+- [Report Issues](https://github.com/rickicode/DockerAZ/issues)
+- [Releases](https://github.com/rickicode/DockerAZ/releases)
