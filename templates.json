@@ -834,5 +834,135 @@
     "volumes": ["config:/config", "project:/home/coder/project"],
     "env": { "PUID": "1000", "PGID": "1000", "TZ": "Asia/Jakarta", "PASSWORD": "password" },
     "versions": ["latest"]
+  },
+  {
+    "id": "umami",
+    "name": "Umami",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/umami/000000",
+    "description": "Simple, fast, privacy-focused alternative to Google Analytics",
+    "image": "ghcr.io/umami-software/umami",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [3000],
+    "volumes": [],
+    "env": {
+      "DATABASE_URL": "postgresql://user:password@postgres:5432/umami",
+      "DATABASE_TYPE": "postgresql",
+      "APP_SECRET": "replace-me-with-a-random-string"
+    },
+    "versions": ["postgresql-latest", "mysql-latest", "latest"]
+  },
+  {
+    "id": "plausible",
+    "name": "Plausible Analytics",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/plausibleanalytics/5850EC",
+    "description": "Simple and privacy-friendly Google Analytics alternative",
+    "image": "ghcr.io/plausible/community-edition",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [8000],
+    "volumes": ["event-data:/var/lib/plausible"],
+    "env": {
+      "SECRET_KEY_BASE": "replace-me-with-64-char-secret",
+      "BASE_URL": "http://localhost:8000",
+      "DATABASE_URL": "postgres://user:password@postgres:5432/plausible",
+      "CLICKHOUSE_DATABASE_URL": "http://clickhouse:8123/plausible"
+    },
+    "versions": ["v2", "latest"]
+  },
+  {
+    "id": "matomo",
+    "name": "Matomo",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/matomo/3152A0",
+    "description": "Google Analytics alternative that protects your data and customers privacy",
+    "image": "matomo",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [80],
+    "volumes": ["data:/var/www/html"],
+    "env": {
+      "MATOMO_DATABASE_HOST": "mysql",
+      "MATOMO_DATABASE_ADAPTER": "mysql",
+      "MATOMO_DATABASE_TABLES_PREFIX": "matomo_",
+      "MATOMO_DATABASE_USERNAME": "matomo",
+      "MATOMO_DATABASE_PASSWORD": "password",
+      "MATOMO_DATABASE_DBNAME": "matomo"
+    },
+    "versions": ["5", "fpm-alpine", "latest"]
+  },
+  {
+    "id": "ackee",
+    "name": "Ackee",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/ackee/30B888",
+    "description": "Self-hosted, Node.js based analytics tool for those who care about privacy",
+    "image": "electerious/ackee",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [3000],
+    "volumes": [],
+    "env": {
+      "ACKEE_MONGODB": "mongodb://mongo:27017/ackee",
+      "ACKEE_USERNAME": "admin",
+      "ACKEE_PASSWORD": "password"
+    },
+    "versions": ["latest"]
+  },
+  {
+    "id": "goaccess",
+    "name": "GoAccess",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/goaccess/0295DB",
+    "description": "Real-time web log analyzer and interactive viewer",
+    "image": "allinurl/goaccess",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [7890],
+    "volumes": ["logs:/var/log/goaccess", "data:/srv/data"],
+    "env": {},
+    "versions": ["latest"]
+  },
+  {
+    "id": "shynet",
+    "name": "Shynet",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/simple-analytics/FF4F64",
+    "description": "Modern, privacy-friendly, and detailed web analytics without cookies",
+    "image": "milesmcc/shynet",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [8080],
+    "volumes": ["db:/var/local/shynet/db"],
+    "env": {
+      "DJANGO_SECRET_KEY": "replace-me-with-secret-key",
+      "ALLOWED_HOSTS": "*",
+      "DB_NAME": "shynet",
+      "DB_USER": "shynet",
+      "DB_PASSWORD": "password",
+      "DB_HOST": "postgres",
+      "DB_PORT": "5432"
+    },
+    "versions": ["latest"]
+  },
+  {
+    "id": "posthog",
+    "name": "PostHog",
+    "icon": "analytics",
+    "logo": "https://cdn.simpleicons.org/posthog/F9BD2B",
+    "description": "Open-source product analytics, session recording, feature flags and A/B testing",
+    "image": "posthog/posthog",
+    "service_type": "image",
+    "category": "Analytics",
+    "ports": [8000],
+    "volumes": ["postgres-data:/var/lib/postgresql/data"],
+    "env": {
+      "SECRET_KEY": "replace-me-with-secret-key",
+      "DATABASE_URL": "postgres://posthog:password@postgres:5432/posthog",
+      "REDIS_URL": "redis://redis:6379"
+    },
+    "versions": ["release", "latest"]
   }
 ]
