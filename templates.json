@@ -97,10 +97,10 @@
     "ports": [3306],
     "volumes": ["data:/var/lib/mysql"],
     "env": {
-      "MYSQL_ROOT_PASSWORD": "root",
-      "MYSQL_DATABASE": "app_db",
-      "MYSQL_USER": "user",
-      "MYSQL_PASSWORD": "password"
+      "MYSQL_ROOT_PASSWORD": "{{ROOT_PASSWORD}}",
+      "MYSQL_DATABASE": "{{DB_NAME}}",
+      "MYSQL_USER": "{{DB_USER}}",
+      "MYSQL_PASSWORD": "{{DB_PASSWORD}}"
     },
     "versions": ["8.4", "8.0", "latest"]
   },
@@ -116,9 +116,9 @@
     "ports": [5432],
     "volumes": ["data:/var/lib/postgresql/data"],
     "env": {
-      "POSTGRES_USER": "user",
-      "POSTGRES_PASSWORD": "password",
-      "POSTGRES_DB": "app_db"
+      "POSTGRES_USER": "{{DB_USER}}",
+      "POSTGRES_PASSWORD": "{{DB_PASSWORD}}",
+      "POSTGRES_DB": "{{DB_NAME}}"
     },
     "versions": ["17", "16", "15", "latest"]
   },
@@ -134,10 +134,10 @@
     "ports": [3306],
     "volumes": ["data:/var/lib/mysql"],
     "env": {
-      "MARIADB_ROOT_PASSWORD": "root",
-      "MARIADB_DATABASE": "app_db",
-      "MARIADB_USER": "user",
-      "MARIADB_PASSWORD": "password"
+      "MARIADB_ROOT_PASSWORD": "{{ROOT_PASSWORD}}",
+      "MARIADB_DATABASE": "{{DB_NAME}}",
+      "MARIADB_USER": "{{DB_USER}}",
+      "MARIADB_PASSWORD": "{{DB_PASSWORD}}"
     },
     "versions": ["11.4", "10.11", "10.6", "latest"]
   },
@@ -167,8 +167,8 @@
     "ports": [27017],
     "volumes": ["data:/data/db"],
     "env": {
-      "MONGO_INITDB_ROOT_USERNAME": "root",
-      "MONGO_INITDB_ROOT_PASSWORD": "password"
+      "MONGO_INITDB_ROOT_USERNAME": "{{DB_USER}}",
+      "MONGO_INITDB_ROOT_PASSWORD": "{{DB_PASSWORD}}"
     },
     "versions": ["8.0", "7.0", "6.0", "latest"]
   },
@@ -205,6 +205,71 @@
         "ADMINER_DEFAULT_SERVER": "mysql"
     },
     "versions": ["4.8", "latest"]
+  },
+  {
+    "id": "pgadmin",
+    "name": "pgAdmin 4",
+    "icon": "storage",
+    "logo": "https://cdn.simpleicons.org/postgresql/4169E1",
+    "description": "Comprehensive and design-rich management tool for PostgreSQL",
+    "image": "dpage/pgadmin4",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [80],
+    "volumes": ["data:/var/lib/pgadmin"],
+    "env": {
+        "PGADMIN_DEFAULT_EMAIL": "admin@example.com",
+        "PGADMIN_DEFAULT_PASSWORD": "password"
+    },
+    "versions": ["8", "latest"]
+  },
+  {
+    "id": "mongo-express",
+    "name": "Mongo Express",
+    "icon": "folder_shared",
+    "logo": "https://cdn.simpleicons.org/mongodb/47A248",
+    "description": "Web-based MongoDB admin interface using Node.js and Express",
+    "image": "mongo-express",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [8081],
+    "volumes": [],
+    "env": {
+        "ME_CONFIG_MONGODB_ADMINUSERNAME": "root",
+        "ME_CONFIG_MONGODB_ADMINPASSWORD": "password",
+        "ME_CONFIG_MONGODB_SERVER": "mongodb"
+    },
+    "versions": ["1.0", "latest"]
+  },
+  {
+    "id": "redis-commander",
+    "name": "Redis Commander",
+    "icon": "memory",
+    "logo": "https://cdn.simpleicons.org/redis/DC382D",
+    "description": "Redis management tool",
+    "image": "rediscommander/redis-commander",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [8081],
+    "volumes": [],
+    "env": {
+        "REDIS_HOSTS": "local:redis:6379"
+    },
+    "versions": ["latest"]
+  },
+  {
+    "id": "cloudbeaver",
+    "name": "CloudBeaver",
+    "icon": "dns",
+    "logo": "https://cdn.simpleicons.org/dbeaver/382923",
+    "description": "Cloud Database Manager - UI for PostgreSQL, MySQL, MariaDB, SQLite, Oracle, etc.",
+    "image": "dbeaver/cloudbeaver",
+    "service_type": "image",
+    "category": "Management Tools",
+    "ports": [8978],
+    "volumes": ["workspace:/opt/cloudbeaver/workspace"],
+    "env": {},
+    "versions": ["latest"]
   },
   {
     "id": "portainer",
